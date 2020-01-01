@@ -1,4 +1,4 @@
-package com.example.himalaya;
+package com.smart.himalaya;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,5 +10,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //初始化项目
     }
 }
