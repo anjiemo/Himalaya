@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Himalaya</string>
+
+
+    <!--title-->
+    <string-array name="indicator_name">
+        <item>推荐</item>
+        <item>订阅</item>
+        <item>历史</item>
+    </string-array>
 </resources>

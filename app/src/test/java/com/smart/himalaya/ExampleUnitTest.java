@@ -1,4 +1,4 @@
-package com.example.himalaya;
+package com.smart.himalaya;
 
 import org.junit.Test;
 

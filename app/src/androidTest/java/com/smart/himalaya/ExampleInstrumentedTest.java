@@ -1,4 +1,4 @@
-package com.example.himalaya;
+package com.smart.himalaya;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.himalaya", appContext.getPackageName());
+        assertEquals("com.smart.himalaya", appContext.getPackageName());
     }
 }
