@@ -34,4 +34,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.okhttp3:okhttp:4.3.0'
     implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
 }
