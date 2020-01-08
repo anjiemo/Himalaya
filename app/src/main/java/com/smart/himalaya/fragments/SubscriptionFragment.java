@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smart.himalaya.R;
+import com.smart.himalaya.base.BaseFragment;
 
 public class SubscriptionFragment extends BaseFragment {
     @Override

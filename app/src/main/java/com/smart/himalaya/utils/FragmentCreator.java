@@ -1,6 +1,6 @@
 package com.smart.himalaya.utils;
 
-import com.smart.himalaya.fragments.BaseFragment;
+import com.smart.himalaya.base.BaseFragment;
 import com.smart.himalaya.fragments.HistoryFragment;
 import com.smart.himalaya.fragments.RecommendFragment;
 import com.smart.himalaya.fragments.SubscriptionFragment;
