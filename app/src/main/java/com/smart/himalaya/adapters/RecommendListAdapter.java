@@ -1,5 +1,6 @@
 package com.smart.himalaya.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
 
+    private static final String TAG = "RecommendListAdapter";
     private List<Album> mData = new ArrayList<>();
 
     @NonNull
@@ -32,6 +34,15 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         //这里是设置数据
         holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick((Integer) v.getTag());
+                }
+                Log.d(TAG, "onClick: =========" + v.getTag());
+            }
+        });
         holder.setData(mData.get(position));
     }
 
@@ -79,5 +90,15 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             Glide.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
 
         }
+    }
+
+    private OnRecommendItemClickListener mItemClickListener = null;
+
+    public void setonRecommendItemClickListener(OnRecommendItemClickListener listener) {
+        mItemClickListener = listener;
+    }
+
+    public interface OnRecommendItemClickListener {
+        void onItemClick(int position);
     }
 }

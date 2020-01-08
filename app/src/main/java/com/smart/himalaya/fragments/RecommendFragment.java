@@ -1,5 +1,6 @@
 package com.smart.himalaya.fragments;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.RecommendListAdapter;
 import com.smart.himalaya.base.BaseFragment;
@@ -21,7 +23,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.OnRecommendItemClickListener {
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
@@ -32,13 +34,12 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     @Override
     protected View onSubViewLoaded(final LayoutInflater layoutInflater, ViewGroup container) {
 
-        mUiLoader = new UILoader(getContext() ) {
+        mUiLoader = new UILoader(getContext()) {
             @Override
             protected View getSuccessView(ViewGroup container) {
-                return createSuccessView(layoutInflater,container);
+                return createSuccessView(layoutInflater, container);
             }
         };
-
 
         //获取到逻辑层的对象
         mRecommendPresenter = RecommendPresenter.getInstance();
@@ -78,6 +79,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //3、设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
+        mRecommendListAdapter.setonRecommendItemClickListener(this);
         return mRootView;
     }
 
@@ -125,5 +127,11 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         if (mRecommendPresenter != null) {
             mRecommendPresenter.getRecommendList();
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //Item被点击了，跳转到详情界面
+        startActivity(new Intent(getContext(), DetailActivity.class));
     }
 }
