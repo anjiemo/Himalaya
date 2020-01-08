@@ -31,14 +31,15 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
         //这里是设置数据
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mItemClickListener != null) {
-                    mItemClickListener.onItemClick((Integer) v.getTag());
+                    int clickPosition = (Integer) v.getTag();
+                    mItemClickListener.onItemClick(clickPosition,mData.get(position));
                 }
                 Log.d(TAG, "onClick: =========" + v.getTag());
             }
@@ -99,6 +100,6 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     }
 
     public interface OnRecommendItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, Album album);
     }
 }

@@ -4,12 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0f0ff0"
     tools:context=".DetailActivity">
 
-    <TextView
-        android:text="这是详情界面"
-        android:layout_centerInParent="true"
+    <ImageView
+        android:id="@+id/iv_large_cover"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitXY" />
+
+    <com.smart.himalaya.views.RoundRectImageView
+        android:id="@+id/iv_small_cover"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_below="@id/iv_large_cover"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="-40dp"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_large_cover"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="-30dp"
+        android:layout_toRightOf="@id/iv_small_cover"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_album_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="这是标题"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_album_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="这是作者信息"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
