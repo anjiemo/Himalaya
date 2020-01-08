@@ -1,15 +1,22 @@
 package com.smart.himalaya;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
+import com.smart.himalaya.utils.ImageBlur;
 import com.smart.himalaya.views.RoundRectImageView;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
@@ -48,6 +55,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onAlbumLoaded(Album album) {
         if (mAlbumTitle != null) {
@@ -56,9 +64,33 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         if (mAlbumAuthor != null) {
             mAlbumAuthor.setText(album.getAnnouncer().getNickname());
         }
+
+        //做毛玻璃效果
         if (mLargeCover != null) {
-            Glide.with(this).load(album.getCoverUrlLarge()).into(mLargeCover);
+            final Handler handler = new Handler();
+            final ImageView imageView = Glide.with(this).load(album.getCoverUrlLarge()).into(mLargeCover).getView();
+            //到这里才是说明有图片的
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // TODO: 2020/1/8 防止图片未加载成功，直接使用高斯模糊工具类时程序会崩溃
+                        Thread.sleep(600);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (imageView.getDrawable() != null) {
+                                    ImageBlur.makeBlur(imageView, DetailActivity.this);
+                                }
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
+
         if (mSmallCover != null) {
             Glide.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);
         }
