@@ -19,7 +19,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recommend_list"
             android:layout_width="match_parent"
-            android:background="#F4F4F4"
+            android:background="#ffF4F4F4"
             android:layout_height="match_parent"
             android:overScrollMode="never" />
     </FrameLayout>

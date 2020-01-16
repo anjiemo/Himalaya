@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4D4D4D"
+    android:background="#ffF4F4F4"
     tools:context=".DetailActivity">
 
     <ImageView
@@ -114,6 +114,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/album_detail_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/player_control_container" />

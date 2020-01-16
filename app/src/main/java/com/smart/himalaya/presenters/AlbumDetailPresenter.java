@@ -63,6 +63,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
                 if (trackList != null) {
                     List<Track> tracks = trackList.getTracks();
                     LogUtil.d(TAG, "tracks size -- >" + tracks.size());
+                    handlerAlbumDetailResult(tracks);
                 }
             }
 
@@ -72,6 +73,12 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
                 LogUtil.d(TAG, "errorMsg --> " + errorMsg);
             }
         });
+    }
+
+    private void handlerAlbumDetailResult(List<Track> tracks) {
+        for (IAlbumDetailViewCallback mCallback : mCallbacks) {
+            mCallback.onDetailListLoaded(tracks);
+        }
     }
 
     @Override
