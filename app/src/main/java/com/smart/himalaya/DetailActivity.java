@@ -5,7 +5,10 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.utils.ImageBlur;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.RoundRectImageView;
+import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 
@@ -29,7 +33,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback {
+public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetryClickListener {
 
     private static final String TAG = "DetailActivity";
     private ImageView mLargeCover;
@@ -40,6 +44,9 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private int mCurrentPage = 1;
     private RecyclerView mAlbum_detail_list;
     private DetailListAdapter mDetailListAdapter;
+    private FrameLayout mDetailListContainer;
+    private UILoader mUiLoader;
+    private long mCurrentId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +61,30 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     }
 
     private void initView() {
+        mDetailListContainer = findViewById(R.id.detail_list_container);
+        //创建UILoader
+        if (mUiLoader == null) {
+            mUiLoader = new UILoader(this) {
+                @Override
+                protected View getSuccessView(ViewGroup container) {
+                    return createSuccessView(container);
+                }
+            };
+            mDetailListContainer.removeAllViews();
+            mDetailListContainer.addView(mUiLoader);
+            mUiLoader.setOnRetryClickListener(DetailActivity.this);
+        }
+
         mLargeCover = (ImageView) findViewById(R.id.iv_large_cover);
         mSmallCover = (RoundRectImageView) findViewById(R.id.iv_small_cover);
         mAlbumTitle = (TextView) findViewById(R.id.tv_album_title);
         mAlbumAuthor = (TextView) findViewById(R.id.tv_album_author);
-        mAlbum_detail_list = findViewById(R.id.album_detail_list);
+
+    }
+
+    private View createSuccessView(ViewGroup container) {
+        View detailListView = LayoutInflater.from(this).inflate(R.layout.item_detail_list, container, false);
+        mAlbum_detail_list = detailListView.findViewById(R.id.album_detail_list);
         //RecyclerView的使用步骤
         //第一步：设置布局管理器
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -76,12 +102,28 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
                 outRect.right = UIUtil.dip2px(view.getContext(), 2);
             }
         });
+        return detailListView;
     }
 
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
+        //判断数据结果，根据结果控制UI显示
+        if (tracks == null || tracks.size() == 0) {
+            if (mUiLoader != null) {
+                mUiLoader.upDateStatus(UILoader.UIStatus.EMPTY);
+            }
+        }
+        if (mUiLoader != null) {
+            mUiLoader.upDateStatus(UILoader.UIStatus.SUCCESS);
+        }
         //更新/设置UI数据
         mDetailListAdapter.setData(tracks);
+    }
+
+    @Override
+    public void onNetworkError(int errorCode, String errorMsg) {
+        //请求发生错误，显示网络异常状态
+        mUiLoader.upDateStatus(UILoader.UIStatus.NETWORK_ERROR);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -89,10 +131,16 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     public void onAlbumLoaded(Album album) {
 
         long id = album.getId();
+        mCurrentId = id;
         LogUtil.d(TAG, "album -- > " + id);
         //获取专辑的详情内容
-        mAlbumDetailPresenter.getAlbumDetail((int) id, mCurrentPage);
-
+        if (mAlbumDetailPresenter != null) {
+            mAlbumDetailPresenter.getAlbumDetail((int) id, mCurrentPage);
+        }
+        //拿到数据，显示Loading状态
+        if (mUiLoader != null) {
+            mUiLoader.upDateStatus(UILoader.UIStatus.LOADING);
+        }
         if (mAlbumTitle != null) {
             mAlbumTitle.setText(album.getAlbumTitle());
         }
@@ -125,9 +173,16 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
                 }
             }).start();
         }
-
         if (mSmallCover != null) {
             Glide.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);
+        }
+    }
+
+    @Override
+    public void onRetryClick() {
+        //这里面表示用户网络不佳的时候，去点击了重新加载
+        if (mAlbumDetailPresenter != null) {
+            mAlbumDetailPresenter.getAlbumDetail((int) mCurrentId, mCurrentPage);
         }
     }
 }
