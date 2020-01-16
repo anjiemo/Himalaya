@@ -1,8 +1,6 @@
 package com.smart.himalaya;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +15,7 @@ import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.utils.ImageBlur;
+import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.RoundRectImageView;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
@@ -25,11 +24,13 @@ import java.util.List;
 
 public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback {
 
+    private static final String TAG = "DetailActivity";
     private ImageView mLargeCover;
     private RoundRectImageView mSmallCover;
     private TextView mAlbumTitle;
     private TextView mAlbumAuthor;
     private AlbumDetailPresenter mAlbumDetailPresenter;
+    private int mCurrentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,12 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onAlbumLoaded(Album album) {
+
+        long id = album.getId();
+        LogUtil.d(TAG, "album -- > " + id);
+        //获取专辑的详情内容
+        mAlbumDetailPresenter.getAlbumDetail((int) id, mCurrentPage);
+
         if (mAlbumTitle != null) {
             mAlbumTitle.setText(album.getAlbumTitle());
         }
