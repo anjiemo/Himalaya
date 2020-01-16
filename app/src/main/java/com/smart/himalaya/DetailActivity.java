@@ -39,7 +39,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private AlbumDetailPresenter mAlbumDetailPresenter;
     private int mCurrentPage = 1;
     private RecyclerView mAlbum_detail_list;
-    private DetailListAdapter mDetailLsitAdapter;
+    private DetailListAdapter mDetailListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +64,16 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mAlbum_detail_list.setLayoutManager(layoutManager);
         //第二步：设置适配器
-        mDetailLsitAdapter = new DetailListAdapter();
-        mAlbum_detail_list.setAdapter(mDetailLsitAdapter);
+        mDetailListAdapter = new DetailListAdapter();
+        mAlbum_detail_list.setAdapter(mDetailListAdapter);
         //设置item的上下间距
         mAlbum_detail_list.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = UIUtil.dip2px(view.getContext(), 5);
-                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
-                outRect.left = UIUtil.dip2px(view.getContext(), 5);
-                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+                outRect.top = UIUtil.dip2px(view.getContext(), 2);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), 2);
+                outRect.left = UIUtil.dip2px(view.getContext(), 2);
+                outRect.right = UIUtil.dip2px(view.getContext(), 2);
             }
         });
     }
@@ -81,7 +81,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
         //更新/设置UI数据
-        mDetailLsitAdapter.setData(tracks);
+        mDetailListAdapter.setData(tracks);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)

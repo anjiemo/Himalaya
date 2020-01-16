@@ -115,6 +115,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_detail_list"
+        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/player_control_container" />
