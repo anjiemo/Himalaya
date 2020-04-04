@@ -22,6 +22,12 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    //添加支持Java8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {

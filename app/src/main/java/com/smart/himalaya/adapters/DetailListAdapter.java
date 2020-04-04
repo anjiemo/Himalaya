@@ -1,9 +1,12 @@
 package com.smart.himalaya.adapters;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,26 +18,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressLint("SimpleDateFormat")
 public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.InnerHolder> {
 
     private List<Track> mDetailData = new ArrayList<>();
     //格式化时间
     private SimpleDateFormat mUpdateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat mDurationFormat = new SimpleDateFormat("mm:ss");
+    private Context mContext;
 
     @NonNull
     @Override
     public DetailListAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_detail, parent, false);
+        mContext = parent.getContext();
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_album_detail, parent, false);
         return new InnerHolder(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull DetailListAdapter.InnerHolder holder, int position) {
         //找到控件，设置数据
-
+        View itemView = holder.itemView;
         Track track = mDetailData.get(position);
-
         //顺序Id
         holder.mOrderText.setText((position + 1) + "");
         //标题
@@ -49,6 +55,10 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
         String updateTimeText = mUpdateFormat.format(track.getUpdatedAt());
         holder.mDetailItemUpdateTime.setText(updateTimeText);
 
+        //设置Item的点击事件
+        itemView.setOnClickListener(v -> {
+            Toast.makeText(mContext, "你点击了第 " + position + " 个Item", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

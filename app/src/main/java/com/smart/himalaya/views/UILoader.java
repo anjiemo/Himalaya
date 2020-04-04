@@ -123,7 +123,7 @@ public abstract class UILoader extends FrameLayout {
         this.mRetryClickListener = listener;
     }
 
-    public interface OnRetryClickListener{
+    public interface OnRetryClickListener {
         void onRetryClick();
     }
 }

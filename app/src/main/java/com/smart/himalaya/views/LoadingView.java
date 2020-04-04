@@ -16,6 +16,7 @@ public class LoadingView extends ImageView {
     //旋转角度
     private int rotateDegree = 0;
 
+    //是否继续旋转
     private boolean mNeedRotate = false;
 
     public LoadingView(Context context) {
@@ -42,6 +43,7 @@ public class LoadingView extends ImageView {
             public void run() {
                 rotateDegree += 30;
                 rotateDegree = rotateDegree <= 360 ? rotateDegree : 0;
+                //会调用onDraw()方法
                 invalidate();
                 //是否继续旋转
                 if (mNeedRotate) {
@@ -54,7 +56,7 @@ public class LoadingView extends ImageView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        //从window中解绑了
+        //从window中解绑了，将是否旋转置为false
         mNeedRotate = false;
     }
 
