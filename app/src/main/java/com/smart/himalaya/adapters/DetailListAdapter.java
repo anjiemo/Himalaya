@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,11 +53,23 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
         //更新日期
         String updateTimeText = mUpdateFormat.format(track.getUpdatedAt());
         holder.mDetailItemUpdateTime.setText(updateTimeText);
-
         //设置Item的点击事件
         itemView.setOnClickListener(v -> {
-            Toast.makeText(mContext, "你点击了第 " + position + " 个Item", Toast.LENGTH_SHORT).show();
+            if (mOnItemClickListener != null) {
+                //参数需要有列表和位置
+                mOnItemClickListener.onItemClick(mDetailData,position);
+            }
         });
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(List<Track> detailData, int position);
     }
 
     @Override
@@ -94,7 +105,6 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
             mDetailItemPlayCount = (TextView) itemView.findViewById(R.id.detail_item_play_count);
             mDetailItemDuration = (TextView) itemView.findViewById(R.id.detail_item_duration);
             mDetailItemUpdateTime = (TextView) itemView.findViewById(R.id.detail_item_update_time);
-
         }
     }
 }
