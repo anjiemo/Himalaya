@@ -37,9 +37,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    //Gson(谷歌官方 Json 库)
     implementation 'com.google.code.gson:gson:2.8.6'
+    //OkHttp（网络请求框架）
     implementation 'com.squareup.okhttp3:okhttp:4.3.0'
     implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
     implementation 'com.android.support:recyclerview-v7:29.0.0'
+    //Glide(图片加载库)
     implementation 'com.github.bumptech.glide:glide:4.10.0'
+
+    //Butter Knife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 }
