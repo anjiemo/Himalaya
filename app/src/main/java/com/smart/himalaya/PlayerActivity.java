@@ -2,24 +2,29 @@ package com.smart.himalaya;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
+
+import com.smart.himalaya.adapters.PlayerTrackPagerAdapter;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.PlayerPresenter;
+import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.views.MyMarqueeView;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 @SuppressLint("SimpleDateFormat")
 public class PlayerActivity extends BaseActivity implements IPlayerCallback {
 
+    private static final String TAG = "PlayerActivity";
     private SimpleDateFormat mMinFormat = new SimpleDateFormat("mm:ss");
     private SimpleDateFormat mHourFormat = new SimpleDateFormat("HH:mm:ss");
     private ImageView mControlBtn;
@@ -31,6 +36,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     private boolean mIsUserTouchProgressBar = false;
     private ImageView mPlayPreBtn;
     private ImageView mPlayNextBtn;
+    private MyMarqueeView mTrackTitleTv;
+    private String mTrackTitleText;
+    private ViewPager mTrackPageView;
+    private PlayerTrackPagerAdapter mTrackPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
         initView();
+        //在界面初始化以后，才去获取数据
+        mPlayerPresenter.getPlayList();
         initEvent();
         startPlay();
     }
@@ -119,6 +130,15 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mDurationBar = findViewById(R.id.track_seek_bar);
         mPlayPreBtn = findViewById(R.id.play_pre);
         mPlayNextBtn = findViewById(R.id.player_next);
+        mTrackTitleTv = findViewById(R.id.track_title);
+        if (!TextUtils.isEmpty(mTrackTitleText)) {
+            mTrackTitleTv.setText(mTrackTitleText);
+        }
+        mTrackPageView = findViewById(R.id.track_pager_view);
+        //创建适配器
+        mTrackPagerAdapter = new PlayerTrackPagerAdapter();
+        //设置适配器
+        mTrackPageView.setAdapter(mTrackPagerAdapter);
     }
 
     @Override
@@ -155,7 +175,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
 
     @Override
     public void onListLoad(List<Track> list) {
-
+        LogUtil.d(TAG,"list --- > " + list);
+        //把数据设置到适配器里
+        if (mTrackPagerAdapter != null) {
+            mTrackPagerAdapter.setData(list);
+        }
     }
 
     @Override
@@ -198,5 +222,15 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     @Override
     public void onAdFinished() {
 
+    }
+
+    @Override
+    public void onTrackUpdate(Track track) {
+        mTrackTitleText = track.getTrackTitle();
+        if (mTrackTitleTv != null) {
+            //设置当前节目的标题
+            mTrackTitleTv.setText(mTrackTitleText);
+        }
+        //当节目改变的时候，我们就获取到当前播放中播放位置
     }
 }

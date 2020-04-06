@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".PlayerActivity">
 
-    <TextView
+    <com.smart.himalaya.views.MyMarqueeView
         android:id="@+id/track_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,11 +15,12 @@
         android:layout_marginRight="20dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="这是标题内容"
         android:textSize="20sp" />
 
     <androidx.viewpager.widget.ViewPager
+        android:id="@+id/track_pager_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/track_title"

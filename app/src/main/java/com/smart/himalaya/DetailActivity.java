@@ -156,25 +156,12 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             final Handler handler = new Handler();
             final ImageView imageView = Glide.with(this).load(album.getCoverUrlLarge()).into(mLargeCover).getView();
             //到这里才是说明有图片的
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // TODO: 2020/1/8 防止图片未加载成功，直接使用高斯模糊工具类时程序会崩溃
-                        Thread.sleep(600);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (imageView.getDrawable() != null) {
-                                    ImageBlur.makeBlur(imageView, DetailActivity.this);
-                                }
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            // TODO: 2020/1/8 防止图片未加载成功，直接使用高斯模糊工具类时程序会崩溃
+            handler.postDelayed(() -> {
+                if (imageView.getDrawable() != null) {
+                    ImageBlur.makeBlur(imageView, DetailActivity.this);
                 }
-            }).start();
+            },300);
         }
         if (mSmallCover != null) {
             Glide.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);

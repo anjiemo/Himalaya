@@ -63,4 +63,11 @@ public interface IPlayerCallback {
      * 广告结束
      */
     void onAdFinished();
+
+    /**
+     * 更新当前节目
+     *
+     * @param track 节目
+     */
+    void onTrackUpdate(Track track);
 }

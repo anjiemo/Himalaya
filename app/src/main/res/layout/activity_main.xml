@@ -11,6 +11,7 @@
         android:layout_height="40dp"
         android:background="@color/main_color"
         android:orientation="horizontal">
+
         <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/main_indicator"
             android:layout_weight="3"
@@ -21,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent">
+
             <ImageView
                 android:layout_centerInParent="true"
                 android:src="@mipmap/search_icon"
@@ -30,7 +32,6 @@
         </RelativeLayout>
 
     </LinearLayout>
-
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/content_pager"
