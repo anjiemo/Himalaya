@@ -27,7 +27,6 @@
         android:layout_marginTop="30dp"
         android:layout_marginBottom="100dp" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,21 +87,21 @@
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@mipmap/previous" />
+                android:src="@drawable/selector_player_pre" />
 
             <ImageView
                 android:id="@+id/play_or_pause_btn"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:src="@mipmap/play" />
+                android:src="@drawable/selector_player_play" />
 
             <ImageView
                 android:id="@+id/player_next"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@mipmap/next_press" />
+                android:src="@drawable/selector_player_next" />
 
             <ImageView
                 android:layout_width="0dp"
