@@ -105,10 +105,11 @@
                 android:src="@drawable/selector_player_next" />
 
             <ImageView
+                android:id="@+id/player_list"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@mipmap/player_icon_list_press" />
+                android:src="@drawable/selector_player_list" />
 
         </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.smart.himalaya;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.MyMarqueeView;
+import com.smart.himalaya.views.MyPopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
@@ -68,13 +70,16 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         sPlayModeRule.put(PLAY_MODEL_SINGLE_LOOP, PLAY_MODEL_LIST);
     }
 
+    private ImageView mPlayerListBtn;
+    private MyPopWindow mMyPopWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        initView();
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
-        initView();
         //在界面初始化以后，才去获取数据
         mPlayerPresenter.getPlayList();
         initEvent();
@@ -152,9 +157,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             //修改播放模式
             if (mPlayerPresenter != null) {
                 mPlayerPresenter.switchPlayMode(playMode);
-                mCurrentMode = playMode;
-                updatePlayModeBtnImg();
             }
+        });
+        mPlayerListBtn.setOnClickListener(v -> {
+            //展示播放列表
+            mMyPopWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
         });
     }
 
@@ -205,6 +212,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         mTrackPageView.setAdapter(mTrackPagerAdapter);
         //切换播放模式的按钮
         mPlayerModeSwitchBtn = findViewById(R.id.player_mode_switch_btn);
+        //播放器列表
+        mPlayerListBtn = findViewById(R.id.player_list);
+        mMyPopWindow = new MyPopWindow();
     }
 
     @Override
@@ -250,7 +260,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     @Override
     public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
-
+        //更新播放模式，并且修改UI。
+        mCurrentMode = playMode;
+        updatePlayModeBtnImg();
     }
 
     @Override
