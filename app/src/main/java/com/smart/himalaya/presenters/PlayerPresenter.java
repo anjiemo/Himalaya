@@ -106,7 +106,9 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void switchPlayMode(XmPlayListControl.PlayMode mode) {
-
+        if (mPlayerManager != null) {
+            mPlayerManager.setPlayMode(mode);
+        }
     }
 
     @Override

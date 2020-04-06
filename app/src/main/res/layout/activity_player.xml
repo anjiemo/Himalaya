@@ -77,10 +77,11 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/player_mode_switch_btn"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@mipmap/sort_descending" />
+                android:src="@drawable/selector_player_mode_list_order" />
 
             <ImageView
                 android:id="@+id/play_pre"
