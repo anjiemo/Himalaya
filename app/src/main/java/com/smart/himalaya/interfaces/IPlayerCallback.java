@@ -69,5 +69,5 @@ public interface IPlayerCallback {
      *
      * @param track 节目
      */
-    void onTrackUpdate(Track track);
+    void onTrackUpdate(Track track,int playIndex);
 }
