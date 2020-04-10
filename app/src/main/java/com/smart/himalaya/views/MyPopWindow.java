@@ -8,13 +8,23 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.smart.himalaya.R;
+import com.smart.himalaya.adapters.PlayListAdapter;
 import com.smart.himalaya.base.BaseApplication;
+import com.ximalaya.ting.android.opensdk.model.track.Track;
+
+import java.util.List;
 
 public class MyPopWindow extends PopupWindow {
 
     private final View mPopView;
     private TextView mCloseBtn;
+    private RecyclerView mTracksList;
+    private LinearLayoutManager mLayoutManager;
+    private PlayListAdapter mPlayListAdapter;
 
     public MyPopWindow() {
         //设置它的宽高
@@ -35,10 +45,30 @@ public class MyPopWindow extends PopupWindow {
 
     private void initView() {
         mCloseBtn = mPopView.findViewById(R.id.play_list_close_btn);
+        //先找到控件
+        mTracksList = mPopView.findViewById(R.id.play_list_rv);
+        //设置布局管理器
+        mLayoutManager = new LinearLayoutManager(BaseApplication.getAppContext());
+        mTracksList.setLayoutManager(mLayoutManager);
+        //创建适配器
+        mPlayListAdapter = new PlayListAdapter();
+        //设置适配器
+        mTracksList.setAdapter(mPlayListAdapter);
     }
 
     private void initEvent() {
         //点击关闭以后，窗口消失
         mCloseBtn.setOnClickListener(v -> dismiss());
+    }
+
+    /**
+     * 给适配器设置数据
+     *
+     * @param data
+     */
+    public void setListData(List<Track> data) {
+        if (mPlayListAdapter != null) {
+            mPlayListAdapter.setData(data);
+        }
     }
 }

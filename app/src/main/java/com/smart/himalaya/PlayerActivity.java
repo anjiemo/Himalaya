@@ -293,6 +293,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mTrackPagerAdapter != null) {
             mTrackPagerAdapter.setData(list);
         }
+        //数据回来以后，也要给节目列表一份
+        if (mMyPopWindow != null) {
+            mMyPopWindow.setListData(list);
+        }
     }
 
     @Override
