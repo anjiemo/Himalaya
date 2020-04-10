@@ -22,5 +22,7 @@ public class MyPopWindow extends PopupWindow {
         View popView = LayoutInflater.from(BaseApplication.getAppContext()).inflate(R.layout.pop_play_list, null);
         //设置内容
         setContentView(popView);
+        //设置窗口进入和退出的动画
+        setAnimationStyle(R.style.pop_animation);
     }
 }

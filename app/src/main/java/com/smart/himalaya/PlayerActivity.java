@@ -1,5 +1,6 @@
 package com.smart.himalaya;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -74,6 +75,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     private ImageView mPlayerListBtn;
     private MyPopWindow mMyPopWindow;
+    private ValueAnimator mEnterBgAnimator;
+    private ValueAnimator mOutBgAnimator;
+    public final int BG_ANIMATION_DURATION = 800;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,24 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         //在界面初始化以后，才去获取数据
         mPlayerPresenter.getPlayList();
         initEvent();
+        initBgAnimation();
+    }
+
+    private void initBgAnimation() {
+        mEnterBgAnimator = ValueAnimator.ofFloat(1.0f, 0.7f);
+        mEnterBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mEnterBgAnimator.addUpdateListener(animation -> {
+            float value = (float) animation.getAnimatedValue();
+            //处理一下背景，有点透明度
+            updateBgAlpha(value);
+        });
+        //退出的
+        mOutBgAnimator = ValueAnimator.ofFloat(0.7f, 1.0f);
+        mOutBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mOutBgAnimator.addUpdateListener(animation -> {
+            float value = (float) animation.getAnimatedValue();
+            updateBgAlpha(value);
+        });
     }
 
     @Override
@@ -164,12 +186,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         mPlayerListBtn.setOnClickListener(v -> {
             //展示播放列表
             mMyPopWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-            //处理一下背景，有点透明度
-            updateBgAlpha(0.8f);
+            //修改背景的透明度，有一个渐变的过程
+            mEnterBgAnimator.start();
         });
         mMyPopWindow.setOnDismissListener(() -> {
             //pop窗体消失以后，恢复透明度
-            updateBgAlpha(1.0f);
+            mOutBgAnimator.start();
         });
     }
 
