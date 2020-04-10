@@ -20,6 +20,7 @@
         android:layout_below="@id/play_list_controller_container" />
 
     <TextView
+        android:id="@+id/play_list_close_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/play_list_rv"
