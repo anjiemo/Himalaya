@@ -355,6 +355,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mTrackPageView != null) {
             mTrackPageView.setCurrentItem(playIndex);
         }
+        //修改播放列表里的播放位置
+        if (mMyPopWindow != null) {
+            mMyPopWindow.setCurrentPlayPosition(playIndex);
+        }
     }
 
     @Override

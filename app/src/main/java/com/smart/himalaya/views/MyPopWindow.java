@@ -71,4 +71,10 @@ public class MyPopWindow extends PopupWindow {
             mPlayListAdapter.setData(data);
         }
     }
+
+    public void setCurrentPlayPosition(int position) {
+        if (mPlayListAdapter != null) {
+            mPlayListAdapter.setCurrentPlayPosition(position);
+        }
+    }
 }
