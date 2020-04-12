@@ -31,7 +31,10 @@ public class MyPopWindow extends PopupWindow {
     private ImageView mPlayModeIv;
     private TextView mPlayModeTv;
     private LinearLayout mPlayModeContainer;
-    private PlayListModeClickListener mPlayModeClickListener = null;
+    private PlayListActionClickListener mPlayModeClickListener = null;
+    private LinearLayout mOrderBtnContainer;
+    private ImageView mOrderIcon;
+    private TextView mOrderText;
 
     public MyPopWindow() {
         //设置它的宽高
@@ -65,6 +68,9 @@ public class MyPopWindow extends PopupWindow {
         mPlayModeTv = mPopView.findViewById(R.id.play_list_mode_tv);
         mPlayModeIv = mPopView.findViewById(R.id.player_list_mode_iv);
         mPlayModeContainer = mPopView.findViewById(R.id.play_list_mode_container);
+        mOrderBtnContainer = mPopView.findViewById(R.id.play_list_order_container);
+        mOrderIcon = mPopView.findViewById(R.id.play_list_order_iv);
+        mOrderText = mPopView.findViewById(R.id.play_list_order_tv);
     }
 
     private void initEvent() {
@@ -74,6 +80,12 @@ public class MyPopWindow extends PopupWindow {
             //切换播放模式
             if (mPlayModeClickListener != null) {
                 mPlayModeClickListener.onPlayModeClick();
+            }
+        });
+        mOrderBtnContainer.setOnClickListener(v -> {
+            //切换播放列表为顺序或者逆序
+            if (mPlayModeClickListener != null) {
+                mPlayModeClickListener.onOrderClick();
             }
         });
     }
@@ -107,6 +119,16 @@ public class MyPopWindow extends PopupWindow {
      */
     public void updatePlayMode(XmPlayListControl.PlayMode currentMode) {
         updatePlayModeBtnImg(currentMode);
+    }
+
+    /**
+     * 更新切换列表顺序和逆序的按钮的文字更新
+     *
+     * @param isReverse
+     */
+    public void updateOrderIcon(boolean isReverse) {
+        mOrderIcon.setImageResource(isReverse ? R.drawable.selector_player_mode_list_order : R.drawable.selector_player_mode_list_reverse);
+        mOrderText.setText(BaseApplication.getAppContext().getString(isReverse ? R.string.order_text : R.string.revers_text));
     }
 
     /**
@@ -145,11 +167,16 @@ public class MyPopWindow extends PopupWindow {
         void onItemClick(int position);
     }
 
-    public void setPlayListModeClickListener(PlayListModeClickListener playModeListener) {
+    public void setPlayListActionListener(PlayListActionClickListener playModeListener) {
         mPlayModeClickListener = playModeListener;
     }
 
-    public interface PlayListModeClickListener {
+    public interface PlayListActionClickListener {
+
+        //播放模式被点击了
         void onPlayModeClick();
+
+        //播放逆序或者顺序切换按钮被点击了
+        void onOrderClick();
     }
 }

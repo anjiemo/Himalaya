@@ -42,17 +42,18 @@
 
         <ImageView
             android:id="@+id/detail_play_control"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:padding="10dp"
             android:src="@mipmap/play_icon" />
 
         <TextView
+            android:id="@+id/play_control_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="2dp"
             android:layout_toRightOf="@id/detail_play_control"
             android:text="继续播放"
             android:textSize="14sp" />

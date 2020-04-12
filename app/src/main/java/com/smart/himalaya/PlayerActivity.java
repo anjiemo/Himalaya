@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -126,7 +125,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     private void initEvent() {
         mControlBtn.setOnClickListener(v -> {
             //如果现在的状态是正在播放的，那么就暂停
-            if (mPlayerPresenter.isPlay()) {
+            if (mPlayerPresenter.isPlaying()) {
                 mPlayerPresenter.pause();
             } else {
                 //如果现在的状态是非播放的，那么我们就让播放器播放节目
@@ -192,9 +191,20 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
                 mPlayerPresenter.playByIndex(position);
             }
         });
-        mMyPopWindow.setPlayListModeClickListener(() -> {
-            //切换播放模式
-            switchPlayMode();
+        mMyPopWindow.setPlayListActionListener(new MyPopWindow.PlayListActionClickListener() {
+            @Override
+            public void onPlayModeClick() {
+                //切换播放模式
+                switchPlayMode();
+            }
+
+            @Override
+            public void onOrderClick() {
+                //点击了切换顺序和逆序
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.reversePlayList();
+                }
+            }
         });
     }
 
@@ -373,6 +383,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mMyPopWindow != null) {
             mMyPopWindow.setCurrentPlayPosition(playIndex);
         }
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+        mMyPopWindow.updateOrderIcon(!isReverse);
     }
 
     @Override
