@@ -175,14 +175,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             }
             return false;
         });
-        mPlayerModeSwitchBtn.setOnClickListener(v -> {
-            //根据当前的mode获取到下一个mode
-            XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
-            //修改播放模式
-            if (mPlayerPresenter != null) {
-                mPlayerPresenter.switchPlayMode(playMode);
-            }
-        });
+        mPlayerModeSwitchBtn.setOnClickListener(v -> switchPlayMode());
         mPlayerListBtn.setOnClickListener(v -> {
             //展示播放列表
             mMyPopWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
@@ -199,6 +192,19 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
                 mPlayerPresenter.playByIndex(position);
             }
         });
+        mMyPopWindow.setPlayListModeClickListener(() -> {
+            //切换播放模式
+            switchPlayMode();
+        });
+    }
+
+    private void switchPlayMode() {
+        //根据当前的mode获取到下一个mode
+        XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
+        //修改播放模式
+        if (mPlayerPresenter != null) {
+            mPlayerPresenter.switchPlayMode(playMode);
+        }
     }
 
     public void updateBgAlpha(float alpha) {
@@ -309,6 +315,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
         //更新播放模式，并且修改UI。
         mCurrentMode = playMode;
+        //更新pop里的播放模式
+        mMyPopWindow.updatePlayMode(mCurrentMode);
         updatePlayModeBtnImg();
     }
 
