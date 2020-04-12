@@ -41,11 +41,11 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
         View itemView = holder.itemView;
         Track track = mDetailData.get(position);
         //顺序Id
-        holder.mOrderText.setText((position + 1) + "");
+        holder.mOrderText.setText(String.valueOf(position + 1));
         //标题
         holder.mDetailItemTitle.setText(track.getTrackTitle());
         //播放次数
-        holder.mDetailItemPlayCount.setText(track.getPlayCount() + "");
+        holder.mDetailItemPlayCount.setText(String.valueOf(track.getPlayCount()));
         //时长
         long durationMil = track.getDuration() * 1000L;
         String duration = mDurationFormat.format(durationMil);
@@ -57,7 +57,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.In
         itemView.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
                 //参数需要有列表和位置
-                mOnItemClickListener.onItemClick(mDetailData,position);
+                mOnItemClickListener.onItemClick(mDetailData, position);
             }
         });
     }

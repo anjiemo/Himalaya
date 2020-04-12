@@ -75,6 +75,15 @@ public class MyPopWindow extends PopupWindow {
     public void setCurrentPlayPosition(int position) {
         if (mPlayListAdapter != null) {
             mPlayListAdapter.setCurrentPlayPosition(position);
+            mTracksList.scrollToPosition(position);
         }
+    }
+
+    public void setPlayListItemClickListener(PlayListItemClickListener listener) {
+        mPlayListAdapter.setOnItemClickListener(listener);
+    }
+
+    public interface PlayListItemClickListener{
+        void onItemClick(int position);
     }
 }

@@ -193,6 +193,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             //pop窗体消失以后，恢复透明度
             mOutBgAnimator.start();
         });
+        mMyPopWindow.setPlayListItemClickListener(position -> {
+            //说明播放列表里的Item被点击了
+            if (mPlayerPresenter != null) {
+                mPlayerPresenter.playByIndex(position);
+            }
+        });
     }
 
     public void updateBgAlpha(float alpha) {

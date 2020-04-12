@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.smart.himalaya.R;
 import com.smart.himalaya.base.BaseApplication;
+import com.smart.himalaya.views.MyPopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerH
 
     private List<Track> mData = new ArrayList<>();
     private int playingIndex = 0;
+    private MyPopWindow.PlayListItemClickListener mItemClickListener = null;
 
     @NonNull
     @Override
@@ -30,6 +32,11 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerH
 
     @Override
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+        holder.itemView.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(position);
+            }
+        });
         //设置数据
         Track track = mData.get(position);
         //找到播放状态的图标
@@ -55,6 +62,10 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerH
     public void setCurrentPlayPosition(int position) {
         playingIndex = position;
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(MyPopWindow.PlayListItemClickListener listener) {
+        mItemClickListener = listener;
     }
 
     public class InnerHolder extends RecyclerView.ViewHolder {
