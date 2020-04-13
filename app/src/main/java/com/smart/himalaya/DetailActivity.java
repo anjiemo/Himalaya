@@ -54,6 +54,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private ImageView mPlayControlBtn;
     private TextView mPlayControlTips;
     private PlayerPresenter mPlayerPresenter;
+    private List<Track> mCurrentTracks = null;
+    public static final int DEFAULT_PLAY_INDEX = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +77,33 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     private void initListener() {
         mPlayControlBtn.setOnClickListener(v -> {
-            //控制播放器的状态
-            if (mPlayerPresenter.isPlaying()) {
-                //正在播放，就暂停
-                mPlayerPresenter.pause();
-            } else {
-                mPlayerPresenter.play();
+            //判断播放器是否有播放列表
+            if (mPlayerPresenter != null) {
+                boolean hasPlayList = mPlayerPresenter.hasPlayList();
+                if (hasPlayList) {
+                    handlePlayControl();
+                } else {
+                    handleNoPlayList();
+                }
             }
         });
+    }
+
+    /**
+     * 当播放器里面没有播放的内容，我们要进行处理
+     */
+    private void handleNoPlayList() {
+        mPlayerPresenter.setPlayList(mCurrentTracks, DEFAULT_PLAY_INDEX);
+    }
+
+    private void handlePlayControl() {
+        //控制播放器的状态
+        if (mPlayerPresenter.isPlaying()) {
+            //正在播放，就暂停
+            mPlayerPresenter.pause();
+        } else {
+            mPlayerPresenter.play();
+        }
     }
 
     private void initView() {
@@ -136,6 +157,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
+        mCurrentTracks = tracks;
         //判断数据结果，根据结果控制UI显示
         if (tracks == null || tracks.size() == 0) {
             if (mUiLoader != null) {

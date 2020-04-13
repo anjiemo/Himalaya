@@ -129,6 +129,14 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         }
     }
 
+    /**
+     * 判断是否有播放的节目列表
+     * @return
+     */
+    public boolean hasPlayList() {
+        return isPlayListSet;
+    }
+
     @Override
     public void switchPlayMode(XmPlayListControl.PlayMode mode) {
         if (mPlayerManager != null) {
