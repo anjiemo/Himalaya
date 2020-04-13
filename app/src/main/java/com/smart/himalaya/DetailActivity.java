@@ -69,6 +69,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         //播放器的Presenter。
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
+        updatePlayState(mPlayerPresenter.isPlaying());
         initListener();
     }
 
@@ -78,7 +79,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             if (mPlayerPresenter.isPlaying()) {
                 //正在播放，就暂停
                 mPlayerPresenter.pause();
-            }else {
+            } else {
                 mPlayerPresenter.play();
             }
         });
@@ -186,7 +187,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
                 if (imageView.getDrawable() != null) {
                     ImageBlur.makeBlur(imageView, DetailActivity.this);
                 }
-            },300);
+            }, 300);
         }
         if (mSmallCover != null) {
             Glide.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);
@@ -212,29 +213,32 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     @Override
     public void onPlayStart() {
-        if (mPlayControlBtn != null&&mPlayControlTips!=null) {
-            //修改图标为暂停的，文字修改为正在播放。
-            mPlayControlBtn.setImageResource(R.drawable.selector_play_control_pause);
-            mPlayControlTips.setText(R.string.playing_tips_text);
-        }
+        //修改图标为暂停的，文字修改为正在播放。
+        updatePlayState(true);
     }
 
     @Override
     public void onPlayPause() {
-        if (mPlayControlBtn != null&&mPlayControlTips!=null) {
-            //设置成播放的图标，文字修改成已暂停
-            mPlayControlBtn.setImageResource(R.drawable.selector_play_control_play);
-            mPlayControlTips.setText(R.string.pause_tips_text);
+        //设置成播放的图标，文字修改成已暂停
+        updatePlayState(false);
+    }
+
+    /**
+     * 根据播放状态修改图标和文字
+     *
+     * @param playing
+     */
+    private void updatePlayState(boolean playing) {
+        if (mPlayControlBtn != null && mPlayControlTips != null) {
+            mPlayControlBtn.setImageResource(playing ? R.drawable.selector_play_control_pause : R.drawable.selector_play_control_play);
+            mPlayControlTips.setText(playing ? R.string.playing_tips_text : R.string.pause_tips_text);
         }
     }
 
     @Override
     public void onPlayStop() {
-        if (mPlayControlBtn != null&&mPlayControlTips!=null) {
-            //设置成播放的图标，文字修改成已暂停
-            mPlayControlBtn.setImageResource(R.drawable.selector_play_control_play);
-            mPlayControlTips.setText(R.string.pause_tips_text);
-        }
+        //设置成播放的图标，文字修改成已暂停
+        updatePlayState(false);
     }
 
     @Override
