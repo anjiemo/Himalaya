@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private RecyclerView mResultListView;
     private AlbumListAdapter mAlbumListAdapter;
     private FlowTextLayout mFlowTextLayout;
+    private InputMethodManager mImm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     }
 
     private void initPresenter() {
+        mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //注册UI更新的接口
         mSearchPresenter = SearchPresenter.getSearchPresenter();
         mSearchPresenter.registerViewCallback(this);
@@ -94,10 +97,9 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                LogUtil.d(TAG, "content --- > " + s);
-//                LogUtil.d(TAG, "content --- > " + start);
-//                LogUtil.d(TAG, "content --- > " + before);
-//                LogUtil.d(TAG, "content --- > " + count);
+                if (TextUtils.isEmpty(s)) {
+                    mSearchPresenter.getHotWord();
+                }
             }
 
             @Override
@@ -108,6 +110,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         mFlowTextLayout.setClickListener(text -> {
             //第一步，把热词扔到输入框里
             mInputBox.setText(text);
+            mInputBox.setSelection(text.length());
             //第二步，发起搜索
             if (mSearchPresenter != null) {
                 mSearchPresenter.doSearch(text);
@@ -128,6 +131,10 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private void initView() {
         mBackBtn = findViewById(R.id.search_back);
         mInputBox = findViewById(R.id.search_input);
+        mInputBox.postDelayed(() -> {
+            mInputBox.requestFocus();
+            mImm.showSoftInput(mInputBox, InputMethodManager.SHOW_IMPLICIT);
+        }, 500);
         mSearchBtn = findViewById(R.id.search_btn);
         mResultContainer = findViewById(R.id.search_container);
         if (mUILoader == null) {
@@ -178,8 +185,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         mResultListView.setVisibility(View.VISIBLE);
         mFlowTextLayout.setVisibility(View.GONE);
         //隐藏键盘
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        mImm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if (result != null) {
             if (result.size() == 0) {
                 //数据为空

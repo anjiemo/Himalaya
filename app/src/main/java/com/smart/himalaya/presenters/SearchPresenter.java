@@ -90,6 +90,7 @@ public class SearchPresenter implements ISearchPresenter {
 
     @Override
     public void getHotWord() {
+        //做一个热词缓存
         mXimalayaApi.getHotWords(new IDataCallBack<HotWordList>() {
             @Override
             public void onSuccess(HotWordList hotWordList) {
