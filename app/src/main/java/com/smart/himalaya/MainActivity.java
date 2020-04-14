@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -42,6 +43,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
     private LinearLayout mPlayControlItem;
+    private RelativeLayout mSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
             //跳转到播放器界面
             startActivity(new Intent(this, PlayerActivity.class));
         });
+        mSearchBtn.setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
     }
 
     /**
@@ -129,6 +132,8 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mSubTitle = findViewById(R.id.main_sub_title);
         mPlayControl = findViewById(R.id.main_play_control);
         mPlayControlItem = findViewById(R.id.main_play_control_item);
+        //搜索
+        mSearchBtn = findViewById(R.id.search_btn);
     }
 
     @Override
