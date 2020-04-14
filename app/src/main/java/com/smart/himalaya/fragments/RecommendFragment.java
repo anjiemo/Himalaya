@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.RecommendListAdapter;
@@ -64,6 +65,8 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //RecyclerView的使用
         //1、找到控件
         mRecommendRv = mRootView.findViewById(R.id.recommend_list);
+        TwinklingRefreshLayout twinklingRefreshLayout = mRootView.findViewById(R.id.over_scroll_view);
+        twinklingRefreshLayout.setPureScrollModeOn();
         //2、设置布局管理器
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
