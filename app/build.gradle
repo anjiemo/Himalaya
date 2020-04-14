@@ -49,4 +49,7 @@ dependencies {
     //Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
+    //TwinklingRefreshLayout（下拉刷新框架：https://github.com/lcodecorex/TwinklingRefreshLayout）
+    implementation  'com.lcodecorex:tkrefreshlayout:1.0.7'
 }

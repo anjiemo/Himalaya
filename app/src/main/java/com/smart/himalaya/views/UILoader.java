@@ -44,7 +44,7 @@ public abstract class UILoader extends FrameLayout {
     public void upDateStatus(UIStatus status) {
         mCurrentStatus = status;
         //更新UI一定要在主线程上
-        BaseApplication.getsHandler().post(new Runnable() {
+        BaseApplication.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 switchUIByCurrentStatus();

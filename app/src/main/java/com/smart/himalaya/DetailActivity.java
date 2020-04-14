@@ -19,8 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
 import com.smart.himalaya.adapters.DetailListAdapter;
 import com.smart.himalaya.base.BaseActivity;
+import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
@@ -56,6 +60,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private PlayerPresenter mPlayerPresenter;
     private List<Track> mCurrentTracks = null;
     public static final int DEFAULT_PLAY_INDEX = 0;
+    private TwinklingRefreshLayout mRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,6 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         setContentView(R.layout.activity_detail);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         initView();
         //这个是专辑详情的Presenter。
         mAlbumDetailPresenter = AlbumDetailPresenter.getInstance();
@@ -128,12 +132,14 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         //播放控制的图标
         mPlayControlBtn = findViewById(R.id.detail_play_control);
         mPlayControlTips = findViewById(R.id.play_control_tv);
-
     }
+
+    private boolean mIsLoaderMore = false;
 
     private View createSuccessView(ViewGroup container) {
         View detailListView = LayoutInflater.from(this).inflate(R.layout.item_detail_list, container, false);
         mAlbum_detail_list = detailListView.findViewById(R.id.album_detail_list);
+        mRefreshLayout = detailListView.findViewById(R.id.refresh_layout);
         //RecyclerView的使用步骤
         //第一步：设置布局管理器
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -152,11 +158,38 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             }
         });
         mDetailListAdapter.setOnItemClickListener(this);
+        BezierLayout headerView = new BezierLayout(this);
+        mRefreshLayout.setHeaderView(headerView);
+        mRefreshLayout.setMaxHeadHeight(140);
+        mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                super.onRefresh(refreshLayout);
+                BaseApplication.getHandler().postDelayed(() -> {
+                    mRefreshLayout.finishRefreshing();
+                }, 2000);
+            }
+
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                super.onLoadMore(refreshLayout);
+                //去加载更多的内容
+                if (mAlbumDetailPresenter != null) {
+                    mAlbumDetailPresenter.loadMore();
+                    mIsLoaderMore = true;
+                }
+            }
+        });
         return detailListView;
     }
 
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
+        if (mIsLoaderMore && mRefreshLayout != null) {
+            mRefreshLayout.finishLoadmore();
+            mIsLoaderMore = false;
+        }
+
         mCurrentTracks = tracks;
         //判断数据结果，根据结果控制UI显示
         if (tracks == null || tracks.size() == 0) {
