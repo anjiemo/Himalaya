@@ -30,5 +30,5 @@ public interface ISearchPresenter extends IBasePresenter<ISearchCallback> {
      * 获取推荐的关键字（相关的关键字）
      * @param keyword
      */
-    void getRecommend(String keyword);
+    void getRecommendWord(String keyword);
 }

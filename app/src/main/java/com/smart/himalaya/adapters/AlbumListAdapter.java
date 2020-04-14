@@ -17,9 +17,9 @@ import com.ximalaya.ting.android.opensdk.model.album.Album;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
+public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.InnerHolder> {
 
-    private static final String TAG = "RecommendListAdapter";
+    private static final String TAG = "AlbumListAdapter";
     private List<Album> mData = new ArrayList<>();
 
     @NonNull

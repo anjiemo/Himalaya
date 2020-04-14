@@ -59,6 +59,9 @@ public class SearchPresenter implements ISearchPresenter {
                 List<Album> albums = searchAlbumList.getAlbums();
                 if (albums != null) {
                     LogUtil.d(TAG, "albums size --- > " + albums.size());
+                    for (ISearchCallback iSearchCallback : mCallbacks) {
+                        iSearchCallback.onSearchResultLoaded(albums);
+                    }
                 } else {
                     LogUtil.d(TAG, "albums is null..");
                 }
@@ -68,6 +71,9 @@ public class SearchPresenter implements ISearchPresenter {
             public void onError(int errorCode, String errorMsg) {
                 LogUtil.d(TAG, "errorCode --- > " + errorCode);
                 LogUtil.d(TAG, "errorMsg --- > " + errorMsg);
+                for (ISearchCallback iSearchCallback : mCallbacks) {
+                    iSearchCallback.onError(errorCode, errorMsg);
+                }
             }
         });
     }
@@ -105,7 +111,7 @@ public class SearchPresenter implements ISearchPresenter {
     }
 
     @Override
-    public void getRecommend(String keyword) {
+    public void getRecommendWord(String keyword) {
         mXimalayaApi.getSuggestWord(keyword, new IDataCallBack<SuggestWords>() {
             @Override
             public void onSuccess(SuggestWords suggestWords) {
@@ -117,8 +123,8 @@ public class SearchPresenter implements ISearchPresenter {
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtil.d(TAG, "getRecommend errorCode --- > " + errorCode);
-                LogUtil.d(TAG, "getRecommend errorMsg --- > " + errorMsg);
+                LogUtil.d(TAG, "getRecommendWord errorCode --- > " + errorCode);
+                LogUtil.d(TAG, "getRecommendWord errorMsg --- > " + errorMsg);
             }
         });
     }

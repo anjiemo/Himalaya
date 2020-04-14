@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
-import com.smart.himalaya.adapters.RecommendListAdapter;
+import com.smart.himalaya.adapters.AlbumListAdapter;
 import com.smart.himalaya.base.BaseFragment;
 import com.smart.himalaya.interfaces.IRecommendViewCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
@@ -25,11 +25,11 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.OnRecommendItemClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, AlbumListAdapter.OnRecommendItemClickListener {
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
-    private RecommendListAdapter mRecommendListAdapter;
+    private AlbumListAdapter mRecommendListAdapter;
     private RecommendPresenter mRecommendPresenter;
     private UILoader mUiLoader;
 
@@ -81,7 +81,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
             }
         });
         //3、设置适配器
-        mRecommendListAdapter = new RecommendListAdapter();
+        mRecommendListAdapter = new AlbumListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
         mRecommendListAdapter.setonRecommendItemClickListener(this);
         return mRootView;
