@@ -45,10 +45,12 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <com.smart.himalaya.views.RoundRectImageView
+            android:id="@+id/main_track_cover"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
@@ -66,10 +68,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我是大标题"
+                android:id="@+id/main_head_title"
                 android:textColor="#444444"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/main_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="作者名称"
@@ -79,6 +83,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/main_play_control"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
