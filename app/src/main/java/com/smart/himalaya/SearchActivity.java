@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.smart.himalaya.adapters.AlbumListAdapter;
+import com.smart.himalaya.adapters.SearchRecommendAdapter;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.ISearchCallback;
 import com.smart.himalaya.presenters.SearchPresenter;
@@ -52,6 +53,8 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private InputMethodManager mImm;
     private ImageView mDelBtn;
     public static final int TIME_SHOW_IMM = 500;
+    private RecyclerView mSearchRecommendList;
+    private SearchRecommendAdapter mSearchRecommendAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,8 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
                     mDelBtn.setVisibility(View.GONE);
                 } else {
                     mDelBtn.setVisibility(View.VISIBLE);
+                    //触发联想查询
+                    getSuggestWord(s.toString());
                 }
             }
 
@@ -132,6 +137,18 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
                 mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
             }
         });
+    }
+
+    /**
+     * 获取联想的关键词
+     *
+     * @param keyword
+     */
+    private void getSuggestWord(String keyword) {
+        LogUtil.d(TAG, "getSuggestWord --- > " + keyword);
+        if (mSearchPresenter != null) {
+            mSearchPresenter.getRecommendWord(keyword);
+        }
     }
 
     private void initView() {
@@ -185,13 +202,22 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
                 outRect.right = UIUtil.dip2px(view.getContext(), 5);
             }
         });
+
+        //搜索推荐
+        mSearchRecommendList = resultView.findViewById(R.id.search_recommend_list);
+        //设置布局管理器
+        LinearLayoutManager recommendLayoutManager = new LinearLayoutManager(this);
+        mSearchRecommendList.setLayoutManager(recommendLayoutManager);
+        //设置适配器
+        mSearchRecommendAdapter = new SearchRecommendAdapter();
+        mSearchRecommendList.setAdapter(mSearchRecommendAdapter);
         return resultView;
     }
 
     @Override
     public void onSearchResultLoaded(List<Album> result) {
+        hideSuccessView();
         mResultListView.setVisibility(View.VISIBLE);
-        mFlowTextLayout.setVisibility(View.GONE);
         //隐藏键盘
         mImm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if (result != null) {
@@ -210,7 +236,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     @Override
     public void onHotWordLoaded(List<HotWord> hotWordList) {
-        mResultListView.setVisibility(View.GONE);
+        hideSuccessView();
         mFlowTextLayout.setVisibility(View.VISIBLE);
         if (mUILoader != null) {
             mUILoader.upDateStatus(UILoader.UIStatus.SUCCESS);
@@ -233,7 +259,18 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     @Override
     public void onRecommendWordLoaded(List<QueryResult> keyWordList) {
-
+        //关键字的联想词
+        LogUtil.d(TAG, "onRecommendWordLoaded --- > " + keyWordList.size());
+        if (mSearchRecommendAdapter != null) {
+            mSearchRecommendAdapter.setData(keyWordList);
+        }
+        //控制UI的状态隐藏和显示
+        if (mUILoader != null) {
+            mUILoader.upDateStatus(UILoader.UIStatus.SUCCESS);
+        }
+        //控制显示和隐藏
+        hideSuccessView();
+        mSearchRecommendList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -241,5 +278,11 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         if (mUILoader != null) {
             mUILoader.upDateStatus(UILoader.UIStatus.NETWORK_ERROR);
         }
+    }
+
+    private void hideSuccessView() {
+        mSearchRecommendList.setVisibility(View.GONE);
+        mResultListView.setVisibility(View.GONE);
+        mFlowTextLayout.setVisibility(View.GONE);
     }
 }
