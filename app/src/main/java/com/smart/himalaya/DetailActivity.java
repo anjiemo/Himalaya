@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.utils.ImageBlur;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.views.MyMarqueeView;
 import com.smart.himalaya.views.RoundRectImageView;
 import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
@@ -56,11 +58,12 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private UILoader mUiLoader;
     private long mCurrentId = -1;
     private ImageView mPlayControlBtn;
-    private TextView mPlayControlTips;
+    private MyMarqueeView mPlayControlTips;
     private PlayerPresenter mPlayerPresenter;
     private List<Track> mCurrentTracks = null;
     public static final int DEFAULT_PLAY_INDEX = 0;
     private TwinklingRefreshLayout mRefreshLayout;
+    private String mCurrentTrackTitle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -286,7 +289,13 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private void updatePlayState(boolean playing) {
         if (mPlayControlBtn != null && mPlayControlTips != null) {
             mPlayControlBtn.setImageResource(playing ? R.drawable.selector_play_control_pause : R.drawable.selector_play_control_play);
-            mPlayControlTips.setText(playing ? R.string.playing_tips_text : R.string.pause_tips_text);
+            if (!playing) {
+                mPlayControlTips.setText(R.string.click_play_tips_text);
+            } else {
+                if (!mCurrentTrackTitle.isEmpty()) {
+                    mPlayControlTips.setText(mCurrentTrackTitle);
+                }
+            }
         }
     }
 
@@ -333,7 +342,12 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     @Override
     public void onTrackUpdate(Track track, int playIndex) {
-
+        if (track != null) {
+            mCurrentTrackTitle = track.getTrackTitle();
+            if (!TextUtils.isEmpty(mCurrentTrackTitle) && mPlayControlTips != null) {
+                mPlayControlTips.setText(mCurrentTrackTitle);
+            }
+        }
     }
 
     @Override
