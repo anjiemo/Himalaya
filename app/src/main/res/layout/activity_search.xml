@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
@@ -18,6 +17,7 @@
 
         <ImageView
             android:layout_width="40dp"
+            android:id="@+id/search_back"
             android:layout_height="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -26,6 +26,7 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="30dp"
+            android:id="@+id/search_input"
             android:layout_weight="1"
             android:background="@drawable/shape_edit_text_bg"
             android:hint="请输入专辑关键字"
@@ -38,6 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/search_btn"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:paddingLeft="5dp"
@@ -51,6 +53,12 @@
     <FrameLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <com.smart.himalaya.views.FlowTextLayout
+        android:id="@+id/flow_text_layout"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="match_parent" />
 
 </LinearLayout>
