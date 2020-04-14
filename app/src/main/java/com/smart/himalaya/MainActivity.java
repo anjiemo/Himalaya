@@ -2,7 +2,6 @@ package com.smart.himalaya;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.smart.himalaya.adapters.IndicatorAdapter;
 import com.smart.himalaya.adapters.MainContentAdapter;
 import com.smart.himalaya.interfaces.IPlayerCallback;
@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private ViewPager mContentPager;
     private IndicatorAdapter mIndicatorAdapter;
     private RoundRectImageView mRoundRectImageView;
-    private TextView mHeaderView;
+    private TextView mHeaderTitle;
     private TextView mSubTitle;
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
@@ -56,6 +56,15 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
             Log.d(TAG, "onTabClick: ==========" + "click index is ====>" + index);
             if (mContentPager != null) {
                 mContentPager.setCurrentItem(index);
+            }
+        });
+        mPlayControl.setOnClickListener(v -> {
+            if (mPlayerPresenter != null) {
+                if (mPlayerPresenter.isPlaying()) {
+                    mPlayerPresenter.pause();
+                } else {
+                    mPlayerPresenter.play();
+                }
             }
         });
     }
@@ -83,7 +92,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
 
         //播放控制相关的
         mRoundRectImageView = findViewById(R.id.main_track_cover);
-        mHeaderView = findViewById(R.id.main_head_title);
+        mHeaderTitle = findViewById(R.id.main_head_title);
         mSubTitle = findViewById(R.id.main_sub_title);
         mPlayControl = findViewById(R.id.main_play_control);
     }
@@ -98,17 +107,23 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
 
     @Override
     public void onPlayStart() {
+        updatePlayControl(true);
+    }
 
+    private void updatePlayControl(boolean isPlaying) {
+        if (mPlayControl != null) {
+            mPlayControl.setImageResource(isPlaying ? R.drawable.selector_player_pause : R.drawable.selector_player_play);
+        }
     }
 
     @Override
     public void onPlayPause() {
-
+        updatePlayControl(false);
     }
 
     @Override
     public void onPlayStop() {
-
+        updatePlayControl(false);
     }
 
     @Override
@@ -153,8 +168,15 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
             String nickname = track.getAnnouncer().getNickname();
             String coverUrlMiddle = track.getCoverUrlMiddle();
             LogUtil.d(TAG, "trackTitle --- > " + trackTitle);
+            if (mHeaderTitle != null) {
+                mHeaderTitle.setText(trackTitle);
+            }
             LogUtil.d(TAG, "nickname --- > " + nickname);
+            if (mSubTitle != null) {
+                mSubTitle.setText(nickname);
+            }
             LogUtil.d(TAG, "coverUrlMiddle --- > " + coverUrlMiddle);
+            Glide.with(this).load(coverUrlMiddle).into(mRoundRectImageView);
         }
     }
 

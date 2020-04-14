@@ -38,14 +38,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="60dp"
         android:overScrollMode="never" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="#dfdfdf"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -59,16 +59,16 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <com.smart.himalaya.views.MyMarqueeView
+                android:id="@+id/main_head_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我是大标题"
-                android:id="@+id/main_head_title"
                 android:textColor="#444444"
                 android:textSize="18sp" />
 
@@ -77,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="作者名称"
-                android:textColor="#9d9d9d"
+                android:textColor="#7f7f7f"
                 android:textSize="14sp" />
 
         </LinearLayout>
