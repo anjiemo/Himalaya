@@ -5,6 +5,7 @@ import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
+import com.ximalaya.ting.android.opensdk.model.album.SearchAlbumList;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 
 import java.util.HashMap;
@@ -55,5 +56,18 @@ public class XimalayaApi {
         map.put(DTransferConstants.PAGE, String.valueOf(pageIndex));
         map.put(DTransferConstants.PAGE_SIZE, String.valueOf(Constants.COUNT_DEFAULT));
         CommonRequest.getTracks(map, callBack);
+    }
+
+    /**
+     * 根据关键字，进行搜索
+     *
+     * @param keyword
+     */
+    public void searchByKeyword(String keyword, int page, IDataCallBack<SearchAlbumList> callBack) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.SEARCH_KEY, keyword);
+        map.put(DTransferConstants.PAGE, String.valueOf(page));
+        map.put(DTransferConstants.PAGE_SIZE, String.valueOf(Constants.COUNT_DEFAULT));
+        CommonRequest.getSearchedAlbums(map, callBack);
     }
 }
