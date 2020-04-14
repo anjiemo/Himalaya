@@ -1,6 +1,7 @@
 package com.smart.himalaya;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,7 +13,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +24,13 @@ import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.ISearchCallback;
 import com.smart.himalaya.presenters.SearchPresenter;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.views.FlowTextLayout;
 import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.word.HotWord;
 import com.ximalaya.ting.android.opensdk.model.word.QueryResult;
+
+import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +47,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private UILoader mUILoader;
     private RecyclerView mResultListView;
     private AlbumListAdapter mAlbumListAdapter;
-    //    private FlowTextLayout mFlowTextLayout;
+    private FlowTextLayout mFlowTextLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +105,18 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
             }
         });
-//        mFlowTextLayout.setClickListener(text -> Toast.makeText(this, text, Toast.LENGTH_SHORT).show());
+        mFlowTextLayout.setClickListener(text -> {
+            //第一步，把热词扔到输入框里
+            mInputBox.setText(text);
+            //第二步，发起搜索
+            if (mSearchPresenter != null) {
+                mSearchPresenter.doSearch(text);
+            }
+            //改变UI状态
+            if (mUILoader != null) {
+                mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
+            }
+        });
         mUILoader.setOnRetryClickListener(() -> {
             if (mSearchPresenter != null) {
                 mSearchPresenter.reSearch();
@@ -113,7 +130,6 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         mInputBox = findViewById(R.id.search_input);
         mSearchBtn = findViewById(R.id.search_btn);
         mResultContainer = findViewById(R.id.search_container);
-//        mFlowTextLayout = findViewById(R.id.flow_text_layout);
         if (mUILoader == null) {
             mUILoader = new UILoader(this) {
                 @Override
@@ -135,6 +151,9 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
      */
     private View createSuccessView() {
         View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
+        //显示热词的
+        mFlowTextLayout = resultView.findViewById(R.id.recommend_hot_word_view);
+
         mResultListView = resultView.findViewById(R.id.result_list_view);
         //设置布局管理器
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -142,14 +161,25 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         //设置适配器
         mAlbumListAdapter = new AlbumListAdapter();
         mResultListView.setAdapter(mAlbumListAdapter);
+        mResultListView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                outRect.top = UIUtil.dip2px(view.getContext(), 5);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
+                outRect.left = UIUtil.dip2px(view.getContext(), 5);
+                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+            }
+        });
         return resultView;
     }
 
     @Override
     public void onSearchResultLoaded(List<Album> result) {
+        mResultListView.setVisibility(View.VISIBLE);
+        mFlowTextLayout.setVisibility(View.GONE);
         //隐藏键盘
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mInputBox.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        imm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if (result != null) {
             if (result.size() == 0) {
                 //数据为空
@@ -166,16 +196,20 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     @Override
     public void onHotWordLoaded(List<HotWord> hotWordList) {
+        mResultListView.setVisibility(View.GONE);
+        mFlowTextLayout.setVisibility(View.VISIBLE);
+        if (mUILoader != null) {
+            mUILoader.upDateStatus(UILoader.UIStatus.SUCCESS);
+        }
         LogUtil.d(TAG, "hotWordList --- > " + hotWordList.size());
         List<String> hotWords = new ArrayList<>();
-//        hotWords.clear();
         for (HotWord hotWord : hotWordList) {
             String searchWord = hotWord.getSearchword();
             hotWords.add(searchWord);
         }
         Collections.sort(hotWords);
         //更新UI。
-//        mFlowTextLayout.setTextContents(hotWords);
+        mFlowTextLayout.setTextContents(hotWords);
     }
 
     @Override
