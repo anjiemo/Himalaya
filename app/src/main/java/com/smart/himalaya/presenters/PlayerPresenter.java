@@ -2,15 +2,19 @@ package com.smart.himalaya.presenters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
+import com.smart.himalaya.api.XimalayaApi;
 import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.interfaces.IPlayerPresenter;
 import com.smart.himalaya.utils.LogUtil;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.PlayableModel;
 import com.ximalaya.ting.android.opensdk.model.advertis.Advertis;
 import com.ximalaya.ting.android.opensdk.model.advertis.AdvertisList;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 import com.ximalaya.ting.android.opensdk.player.advertis.IXmAdsStatusListener;
 import com.ximalaya.ting.android.opensdk.player.constants.PlayerConstants;
@@ -34,7 +38,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private List<IPlayerCallback> mIPlayerCallbacks = new ArrayList<>();
     private final XmPlayerManager mPlayerManager;
     private Track mCurrentTrack;
-    private int mCurrentIndex = 0;
+    public static final int DEFAULT_PLAY_INDEX = 0;
+    private int mCurrentIndex = DEFAULT_PLAY_INDEX;
     private final SharedPreferences mPlayModeSp;
     private XmPlayListControl.PlayMode mCurrentPlayMode = PLAY_MODEL_LIST;
     private boolean mIsReverse = false;
@@ -131,6 +136,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     /**
      * 判断是否有播放的节目列表
+     *
      * @return
      */
     public boolean hasPlayList() {
@@ -228,6 +234,32 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             iPlayerCallback.onTrackUpdate(mCurrentTrack, mCurrentIndex);
             iPlayerCallback.updateListOrder(mIsReverse);
         }
+    }
+
+    @Override
+    public void playByAlbumId(long id) {
+        //1、要获取到专辑的列表内容
+        XimalayaApi ximalayaApi = XimalayaApi.getInstance();
+        ximalayaApi.getAlbumDetail(new IDataCallBack<TrackList>() {
+            @Override
+            public void onSuccess(TrackList trackList) {
+                //2、把专辑内容设置给播放器
+                List<Track> tracks = trackList.getTracks();
+                if (trackList != null && tracks.size() > 0) {
+                    mPlayerManager.setPlayList(tracks, DEFAULT_PLAY_INDEX);
+                    isPlayListSet = true;
+                    mCurrentTrack = tracks.get(DEFAULT_PLAY_INDEX);
+                    mCurrentIndex = DEFAULT_PLAY_INDEX;
+                }
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                LogUtil.d(TAG, "errorCode --- > " + errorCode + "errorMsg --- > " + errorMsg);
+                Toast.makeText(BaseApplication.getAppContext(), "请求数据错误...", Toast.LENGTH_SHORT).show();
+            }
+        }, id, 1);
+        //3、播放了...
     }
 
     @Override

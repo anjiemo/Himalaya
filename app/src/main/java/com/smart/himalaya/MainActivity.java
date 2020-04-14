@@ -1,8 +1,11 @@
 package com.smart.himalaya;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -14,8 +17,10 @@ import com.smart.himalaya.adapters.IndicatorAdapter;
 import com.smart.himalaya.adapters.MainContentAdapter;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.PlayerPresenter;
+import com.smart.himalaya.presenters.RecommendPresenter;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.RoundRectImageView;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
@@ -36,6 +41,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private TextView mSubTitle;
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
+    private LinearLayout mPlayControlItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +66,40 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         });
         mPlayControl.setOnClickListener(v -> {
             if (mPlayerPresenter != null) {
-                if (mPlayerPresenter.isPlaying()) {
-                    mPlayerPresenter.pause();
+                boolean hasPlayList = mPlayerPresenter.hasPlayList();
+                if (!hasPlayList) {
+                    //没有设置过播放列表，我们就播放默认的第一个推荐专辑
+                    //第一个推荐专辑，每天都会变的
+                    playFirstRecommend();
                 } else {
-                    mPlayerPresenter.play();
+                    if (mPlayerPresenter.isPlaying()) {
+                        mPlayerPresenter.pause();
+                    } else {
+                        mPlayerPresenter.play();
+                    }
                 }
             }
         });
+        mPlayControlItem.setOnClickListener(v -> {
+            boolean hasPlayList = mPlayerPresenter.hasPlayList();
+            if (!hasPlayList) {
+                playFirstRecommend();
+            }
+            //跳转到播放器界面
+            startActivity(new Intent(this, PlayerActivity.class));
+        });
+    }
+
+    /**
+     * 播放第一个推荐的内容
+     */
+    private void playFirstRecommend() {
+        List<Album> currentRecommend = RecommendPresenter.getInstance().getCurrentRecommend();
+        if (currentRecommend != null) {
+            Album album = currentRecommend.get(0);
+            long albumId = album.getId();
+            mPlayerPresenter.playByAlbumId(albumId);
+        }
     }
 
     private void initView() {
@@ -95,6 +128,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mHeaderTitle = findViewById(R.id.main_head_title);
         mSubTitle = findViewById(R.id.main_sub_title);
         mPlayControl = findViewById(R.id.main_play_control);
+        mPlayControlItem = findViewById(R.id.main_play_control_item);
     }
 
     @Override
