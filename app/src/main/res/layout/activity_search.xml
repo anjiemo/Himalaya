@@ -16,30 +16,45 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
             android:id="@+id/search_back"
+            android:layout_width="40dp"
             android:layout_height="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:src="@drawable/selector_back_btn" />
 
-        <EditText
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:id="@+id/search_input"
-            android:layout_weight="1"
-            android:background="@drawable/shape_edit_text_bg"
-            android:hint="请输入专辑关键字"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:singleLine="true"
-            android:textCursorDrawable="@drawable/shape_edit_text_cursor"
-            android:textSize="16sp" />
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/search_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_edit_text_bg"
+                android:hint="请输入专辑关键字"
+                android:paddingLeft="10dp"
+                android:paddingRight="40dp"
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/shape_edit_text_cursor"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/search_input_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/input_delete_icon" />
+
+        </RelativeLayout>
 
         <TextView
+            android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/search_btn"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:paddingLeft="5dp"

@@ -50,6 +50,8 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private AlbumListAdapter mAlbumListAdapter;
     private FlowTextLayout mFlowTextLayout;
     private InputMethodManager mImm;
+    private ImageView mDelBtn;
+    public static final int TIME_SHOW_IMM = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     private void initEvent() {
         mBackBtn.setOnClickListener(v -> finish());
+        mDelBtn.setOnClickListener(v -> mInputBox.setText(""));
         mSearchBtn.setOnClickListener(v -> {
             //去调用搜索的逻辑
             String keyword = mInputBox.getText().toString().trim();
@@ -99,6 +102,9 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s)) {
                     mSearchPresenter.getHotWord();
+                    mDelBtn.setVisibility(View.GONE);
+                } else {
+                    mDelBtn.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -131,10 +137,12 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private void initView() {
         mBackBtn = findViewById(R.id.search_back);
         mInputBox = findViewById(R.id.search_input);
+        mDelBtn = findViewById(R.id.search_input_delete);
+        mDelBtn.setVisibility(View.GONE);
         mInputBox.postDelayed(() -> {
             mInputBox.requestFocus();
             mImm.showSoftInput(mInputBox, InputMethodManager.SHOW_IMPLICIT);
-        }, 500);
+        }, TIME_SHOW_IMM);
         mSearchBtn = findViewById(R.id.search_btn);
         mResultContainer = findViewById(R.id.search_container);
         if (mUILoader == null) {
