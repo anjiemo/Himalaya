@@ -62,6 +62,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
     private SearchRecommendAdapter mSearchRecommendAdapter;
     private TwinklingRefreshLayout mRefreshLayout;
     private boolean mNeedSuggestWords = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +107,11 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
         mSearchBtn.setOnClickListener(v -> {
             //去调用搜索的逻辑
             String keyword = mInputBox.getText().toString().trim();
+            if (TextUtils.isEmpty(keyword)) {
+                //可以给个提示
+                Toast.makeText(this, "搜索关键字不能为空.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (mSearchPresenter != null) {
                 mSearchPresenter.doSearch(keyword);
                 mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
@@ -127,7 +133,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
                     if (mNeedSuggestWords) {
                         //触发联想查询
                         getSuggestWord(s.toString());
-                    }else {
+                    } else {
                         mNeedSuggestWords = true;
                     }
                 }
@@ -150,7 +156,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
             }
         });
         mSearchRecommendAdapter.setItemClickListener(keyword -> {
-        //LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
+            //LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
             //不需要相关的联想词
             mNeedSuggestWords = false;
             //推荐热词的点击
@@ -160,6 +166,11 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
     }
 
     private void switch2Search(String text) {
+        if (TextUtils.isEmpty(text)) {
+            //可以给个提示
+            Toast.makeText(this, "搜索关键字不能为空.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //第一步，把热词扔到输入框里
         mInputBox.setText(text);
         mInputBox.setSelection(text.length());
