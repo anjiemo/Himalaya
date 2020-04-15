@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.smart.himalaya.interfaces.ISubscriptionCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SubscriptionPresenter;
 import com.smart.himalaya.views.ConfirmDialog;
+import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -35,17 +37,34 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     private SubscriptionPresenter mSubscriptionPresenter;
     private RecyclerView mSubListView;
     private AlbumListAdapter mAlbumListAdapter;
-    private TwinklingRefreshLayout mRefreshLayout;
     private Album mCurrentClickAlbum = null;
+    private UILoader mUiLoader;
 
     @Override
     protected View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container) {
-        View rootView = layoutInflater.inflate(R.layout.fragment_subscription, container, false);
-        mRefreshLayout = rootView.findViewById(R.id.over_scroll_view);
-        mRefreshLayout.setEnableLoadmore(false);
-        mRefreshLayout.setEnableRefresh(false);
-        mSubListView = rootView.findViewById(R.id.subscription_list);
-        mSubListView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        FrameLayout rootView = (FrameLayout) layoutInflater.inflate(R.layout.fragment_subscription, container, false);
+        if (mUiLoader == null) {
+            mUiLoader = new UILoader(container.getContext()) {
+                @Override
+                protected View getSuccessView(ViewGroup container) {
+                    return createSuccessView();
+                }
+            };
+            if (mUiLoader.getParent() instanceof ViewGroup) {
+                ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
+            }
+            rootView.addView(mUiLoader);
+        }
+        return rootView;
+    }
+
+    private View createSuccessView() {
+        View itemView = LayoutInflater.from(BaseApplication.getAppContext()).inflate(R.layout.item_subscription, null);
+        TwinklingRefreshLayout refreshLayout = itemView.findViewById(R.id.over_scroll_view);
+        refreshLayout.setEnableLoadmore(false);
+        refreshLayout.setEnableRefresh(false);
+        mSubListView = itemView.findViewById(R.id.subscription_list);
+        mSubListView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         mSubListView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
@@ -62,7 +81,10 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
         mSubscriptionPresenter = SubscriptionPresenter.getInstance();
         mSubscriptionPresenter.loadSubscriptionList();
         mSubscriptionPresenter.registerViewCallback(this);
-        return rootView;
+        if (mUiLoader != null) {
+            mUiLoader.upDateStatus(UILoader.UIStatus.LOADING);
+        }
+        return itemView;
     }
 
     @Override
@@ -74,9 +96,19 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
 
     @Override
     protected void onRefresh() {
+        List<Album> albums = mSubscriptionPresenter.getSubscriptions();
+        if (albums.size() == 0) {
+            if (mUiLoader != null) {
+                mUiLoader.upDateStatus(UILoader.UIStatus.EMPTY);
+            }
+        } else {
+            if (mUiLoader != null) {
+                mUiLoader.upDateStatus(UILoader.UIStatus.SUCCESS);
+            }
+        }
         //更新UI
         if (mAlbumListAdapter != null) {
-            mAlbumListAdapter.setData(mSubscriptionPresenter.getSubscriptions());
+            mAlbumListAdapter.setData(albums);
         }
     }
 
