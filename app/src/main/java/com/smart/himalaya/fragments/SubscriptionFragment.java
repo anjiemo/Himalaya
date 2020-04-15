@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,7 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     private RecyclerView mSubListView;
     private AlbumListAdapter mAlbumListAdapter;
     private TwinklingRefreshLayout mRefreshLayout;
+    private Album mCurrentClickAlbum = null;
 
     @Override
     protected View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container) {
@@ -113,6 +115,7 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
 
     @Override
     public void onItemLongClick(Album album) {
+        mCurrentClickAlbum = album;
         //订阅的item被长按了
         ConfirmDialog confirmDialog = new ConfirmDialog(getActivity());
         confirmDialog.setOnDialogActionClickListener(this);
@@ -122,6 +125,12 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     @Override
     public void onCancelSubClick() {
         //取消订阅内容
+        if (mCurrentClickAlbum != null && mSubscriptionPresenter != null) {
+            mSubscriptionPresenter.deleteSubscription(mCurrentClickAlbum);
+            onRefresh();
+            //给出取消订阅的提示
+            Toast.makeText(BaseApplication.getAppContext(), R.string.cancel_sub_success, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

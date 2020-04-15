@@ -31,6 +31,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="取消订阅"
+                android:textColor="#C5C0C0"
                 android:textSize="20dp" />
 
             <View
