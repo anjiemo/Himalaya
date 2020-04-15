@@ -1,5 +1,6 @@
 package com.smart.himalaya.adapters;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,15 +35,12 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
     public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
         //这里是设置数据
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null) {
-                    int clickPosition = (Integer) v.getTag();
-                    mItemClickListener.onItemClick(clickPosition,mData.get(position));
-                }
-                Log.d(TAG, "onClick: =========" + v.getTag());
+        holder.itemView.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                int clickPosition = (Integer) v.getTag();
+                mItemClickListener.onItemClick(clickPosition, mData.get(position));
             }
+            Log.d(TAG, "onClick: =========" + v.getTag());
         });
         holder.setData(mData.get(position));
     }
@@ -85,11 +83,15 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
 
             albumTitleTv.setText(album.getAlbumTitle());
             albumDesTv.setText(album.getAlbumIntro());
-            albumPlayCountTv.setText(album.getPlayCount() + "");
-            albumContentCountTv.setText(album.getIncludeTrackCount() + "");
+            albumPlayCountTv.setText(String.valueOf(album.getPlayCount()));
+            albumContentCountTv.setText(String.valueOf(album.getIncludeTrackCount()));
 
-            Glide.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
-
+            String coverUrlLarge = album.getCoverUrlLarge();
+            if (!TextUtils.isEmpty(coverUrlLarge)) {
+                Glide.with(itemView.getContext()).load(coverUrlLarge).into(albumCoverIv);
+            } else {
+                albumCoverIv.setImageResource(R.mipmap.ximalay_logo);
+            }
         }
     }
 

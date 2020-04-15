@@ -17,11 +17,12 @@ import java.util.List;
 public class SearchRecommendAdapter extends RecyclerView.Adapter<SearchRecommendAdapter.InnerHolder> {
 
     private List<QueryResult> mData = new ArrayList<>();
+    private ItemClickListener mItemClickListener = null;
 
     @NonNull
     @Override
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_recommend, parent, false);
         return new InnerHolder(itemView);
     }
 
@@ -29,6 +30,20 @@ public class SearchRecommendAdapter extends RecyclerView.Adapter<SearchRecommend
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         QueryResult queryResult = mData.get(position);
         holder.mText.setText(queryResult.getKeyword());
+        //设置点击事件
+        holder.itemView.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(queryResult.getKeyword());
+            }
+        });
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener{
+        void onItemClick(String keyword);
     }
 
     @Override

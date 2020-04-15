@@ -9,7 +9,7 @@
 
     <color name="white">#ffffff</color>
     <color name="sub_text_title">#979797</color>
-    <color name="sub_text_title99">#99979797</color>
+    <color name="sub_text_title99">#aaefefef</color>
     <color name="play_list_line_color">#ECEEF0</color>
 
     <color name="black">#000000</color>

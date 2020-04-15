@@ -20,11 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.smart.himalaya.adapters.AlbumListAdapter;
 import com.smart.himalaya.adapters.SearchRecommendAdapter;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.ISearchCallback;
 import com.smart.himalaya.presenters.SearchPresenter;
+import com.smart.himalaya.utils.Constants;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.FlowTextLayout;
 import com.smart.himalaya.views.UILoader;
@@ -55,6 +58,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     public static final int TIME_SHOW_IMM = 500;
     private RecyclerView mSearchRecommendList;
     private SearchRecommendAdapter mSearchRecommendAdapter;
+    private TwinklingRefreshLayout mRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,17 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     }
 
     private void initEvent() {
+        mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                LogUtil.d(TAG, "load more...");
+                //加载更多的内容
+                if (mSearchPresenter != null) {
+                    mSearchPresenter.loadMore();
+                }
+
+            }
+        });
         mBackBtn.setOnClickListener(v -> finish());
         mDelBtn.setOnClickListener(v -> mInputBox.setText(""));
         mSearchBtn.setOnClickListener(v -> {
@@ -118,25 +133,31 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
             }
         });
-        mFlowTextLayout.setClickListener(text -> {
-            //第一步，把热词扔到输入框里
-            mInputBox.setText(text);
-            mInputBox.setSelection(text.length());
-            //第二步，发起搜索
-            if (mSearchPresenter != null) {
-                mSearchPresenter.doSearch(text);
-            }
-            //改变UI状态
-            if (mUILoader != null) {
-                mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
-            }
-        });
+        mFlowTextLayout.setClickListener(text -> switch2Search(text));
         mUILoader.setOnRetryClickListener(() -> {
             if (mSearchPresenter != null) {
                 mSearchPresenter.reSearch();
                 mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
             }
         });
+        mSearchRecommendAdapter.setItemClickListener(keyword -> {
+//            LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
+            switch2Search(keyword);
+        });
+    }
+
+    private void switch2Search(String text) {
+        //第一步，把热词扔到输入框里
+        mInputBox.setText(text);
+        mInputBox.setSelection(text.length());
+        //第二步，发起搜索
+        if (mSearchPresenter != null) {
+            mSearchPresenter.doSearch(text);
+        }
+        //改变UI状态
+        if (mUILoader != null) {
+            mUILoader.upDateStatus(UILoader.UIStatus.LOADING);
+        }
     }
 
     /**
@@ -183,6 +204,8 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
      */
     private View createSuccessView() {
         View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
+        //刷新控件
+        mRefreshLayout = resultView.findViewById(R.id.search_result_refresh);
         //显示热词的
         mFlowTextLayout = resultView.findViewById(R.id.recommend_hot_word_view);
 
@@ -208,6 +231,15 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         //设置布局管理器
         LinearLayoutManager recommendLayoutManager = new LinearLayoutManager(this);
         mSearchRecommendList.setLayoutManager(recommendLayoutManager);
+        mSearchRecommendList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                outRect.top = UIUtil.dip2px(view.getContext(), 2);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), 2);
+                outRect.left = UIUtil.dip2px(view.getContext(), 5);
+                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+            }
+        });
         //设置适配器
         mSearchRecommendAdapter = new SearchRecommendAdapter();
         mSearchRecommendList.setAdapter(mSearchRecommendAdapter);
@@ -217,9 +249,13 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     @Override
     public void onSearchResultLoaded(List<Album> result) {
         hideSuccessView();
-        mResultListView.setVisibility(View.VISIBLE);
+        mRefreshLayout.setVisibility(View.VISIBLE);
         //隐藏键盘
         mImm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        handleSearchResult(result);
+    }
+
+    private void handleSearchResult(List<Album> result) {
         if (result != null) {
             if (result.size() == 0) {
                 //数据为空
@@ -254,7 +290,15 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     @Override
     public void onLoadMoreResult(List<Album> result, boolean isOkay) {
-
+        //处理加载更多的结果
+        if (mRefreshLayout != null) {
+            mRefreshLayout.finishLoadmore();
+        }
+        if (isOkay) {
+            handleSearchResult(result);
+        } else {
+            Toast.makeText(this, "没有更多内容", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -282,7 +326,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     private void hideSuccessView() {
         mSearchRecommendList.setVisibility(View.GONE);
-        mResultListView.setVisibility(View.GONE);
+        mRefreshLayout.setVisibility(View.GONE);
         mFlowTextLayout.setVisibility(View.GONE);
     }
 }
