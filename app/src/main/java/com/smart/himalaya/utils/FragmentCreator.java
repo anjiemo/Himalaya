@@ -37,6 +37,4 @@ public class FragmentCreator {
         sCache.put(index, baseFragment);
         return baseFragment;
     }
-
-
 }

@@ -59,6 +59,11 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         return mUiLoader;
     }
 
+    @Override
+    protected void onRefresh() {
+
+    }
+
     private View createSuccessView(LayoutInflater layoutInflater, ViewGroup container) {
         //View加载完成
         mRootView = layoutInflater.inflate(R.layout.fragment_recommend, container, false);

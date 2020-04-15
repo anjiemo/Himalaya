@@ -107,7 +107,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         mPlayerPresenter.registerViewCallback(this);
         //订阅相关的Presenter
         mSubscriptionPresenter = SubscriptionPresenter.getInstance();
-        mSubscriptionPresenter.getSubscriptionList();
+        mSubscriptionPresenter.loadSubscriptionList();
         mSubscriptionPresenter.registerViewCallback(this);
     }
 

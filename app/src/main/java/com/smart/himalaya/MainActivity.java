@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -119,7 +120,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
 
         //创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        MainContentAdapter mainContentAdapter = new MainContentAdapter(supportFragmentManager);
+        MainContentAdapter mainContentAdapter = new MainContentAdapter(supportFragmentManager, FragmentPagerAdapter.POSITION_NONE);
 
         mContentPager.setAdapter(mainContentAdapter);
         //把ViewPager和indicator绑定到一起

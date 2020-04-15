@@ -1,5 +1,7 @@
 package com.smart.himalaya.presenters;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.smart.himalaya.base.BaseApplication;
@@ -12,6 +14,7 @@ import com.smart.himalaya.interfaces.ISubscriptionPresenter;
 import com.smart.himalaya.utils.Constants;
 import com.smart.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
+import com.ximalaya.ting.android.opensdk.model.album.Announcer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +33,19 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     private void listSubscriptions() {
         mSubscriptions.clear();
         List<MyAlbum> myAlbums = mDaoSession.loadAll(MyAlbum.class);
-        String json = new Gson().toJson(myAlbums);
-        List<Album> subscriptions = new Gson().fromJson(json, new TypeToken<List<Album>>() {
-        }.getType());
-        mSubscriptions.addAll(subscriptions);
+        for (MyAlbum myAlbum : myAlbums) {
+            Album album = new Album();
+            album.setId(myAlbum.getId());
+            album.setAlbumTitle(myAlbum.getAlbumTitle());
+            album.setAlbumIntro(myAlbum.getAlbumIntro());
+            album.setCoverUrlLarge(myAlbum.getCoverUrlLarge());
+            album.setPlayCount(myAlbum.getPlayCount());
+            album.setIncludeTrackCount(myAlbum.getIncludeTrackCount());
+            Announcer announcer = new Announcer();
+            announcer.setNickname(myAlbum.getNickName());
+            album.setAnnouncer(announcer);
+            mSubscriptions.add(album);
+        }
     }
 
     private static SubscriptionPresenter sSubscriptionPresenter = null;
@@ -76,8 +88,13 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     }
 
     @Override
-    public void getSubscriptionList() {
+    public void loadSubscriptionList() {
         listSubscriptions();
+    }
+
+    public List<Album> getSubscriptions() {
+        listSubscriptions();
+        return mSubscriptions;
     }
 
     @Override

@@ -26,7 +26,7 @@ public interface ISubscriptionPresenter  extends IBasePresenter<ISubscriptionCal
     /**
      * 获取订阅列表
      */
-    void getSubscriptionList();
+    void loadSubscriptionList();
 
 
     /**
@@ -35,5 +35,4 @@ public interface ISubscriptionPresenter  extends IBasePresenter<ISubscriptionCal
      * @param album
      */
     boolean isSub(Album album);
-
 }

@@ -7,13 +7,13 @@
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/over_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#ffF4F4F4">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recommend_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffF4F4F4"
             android:overScrollMode="never" />
 
     </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
