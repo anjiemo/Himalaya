@@ -16,17 +16,19 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.AlbumListAdapter;
+import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.base.BaseFragment;
 import com.smart.himalaya.interfaces.ISubscriptionCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SubscriptionPresenter;
+import com.smart.himalaya.views.ConfirmDialog;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class SubscriptionFragment extends BaseFragment implements ISubscriptionCallback, AlbumListAdapter.onAlbumItemClickListener, AlbumListAdapter.onAlbumItemLongClickListener {
+public class SubscriptionFragment extends BaseFragment implements ISubscriptionCallback, AlbumListAdapter.onAlbumItemClickListener, AlbumListAdapter.onAlbumItemLongClickListener, ConfirmDialog.OnDialogActionClickListener {
 
     private static final String TAG = "SubscriptionFragment";
     private SubscriptionPresenter mSubscriptionPresenter;
@@ -112,5 +114,18 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     @Override
     public void onItemLongClick(Album album) {
         //订阅的item被长按了
+        ConfirmDialog confirmDialog = new ConfirmDialog(getActivity());
+        confirmDialog.setOnDialogActionClickListener(this);
+        confirmDialog.show();
+    }
+
+    @Override
+    public void onCancelSubClick() {
+        //取消订阅内容
+    }
+
+    @Override
+    public void onGiveUpClick() {
+        //放弃取消订阅
     }
 }
