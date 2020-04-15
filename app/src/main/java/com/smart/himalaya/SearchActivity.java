@@ -61,7 +61,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
     private RecyclerView mSearchRecommendList;
     private SearchRecommendAdapter mSearchRecommendAdapter;
     private TwinklingRefreshLayout mRefreshLayout;
-
+    private boolean mNeedSuggestWords = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,8 +124,12 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
                     mDelBtn.setVisibility(View.GONE);
                 } else {
                     mDelBtn.setVisibility(View.VISIBLE);
-                    //触发联想查询
-                    getSuggestWord(s.toString());
+                    if (mNeedSuggestWords) {
+                        //触发联想查询
+                        getSuggestWord(s.toString());
+                    }else {
+                        mNeedSuggestWords = true;
+                    }
                 }
             }
 
@@ -134,7 +138,11 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
 
             }
         });
-        mFlowTextLayout.setClickListener(text -> switch2Search(text));
+        mFlowTextLayout.setClickListener(text -> {
+            //不需要相关的联想词
+            mNeedSuggestWords = false;
+            switch2Search(text);
+        });
         mUILoader.setOnRetryClickListener(() -> {
             if (mSearchPresenter != null) {
                 mSearchPresenter.reSearch();
@@ -142,7 +150,10 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
             }
         });
         mSearchRecommendAdapter.setItemClickListener(keyword -> {
-//            LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
+        //LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
+            //不需要相关的联想词
+            mNeedSuggestWords = false;
+            //推荐热词的点击
             switch2Search(keyword);
         });
         mAlbumListAdapter.setonRecommendItemClickListener(this);
