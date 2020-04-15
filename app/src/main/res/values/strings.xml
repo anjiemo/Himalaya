@@ -21,4 +21,6 @@
     <string name="sub_tips_text">+ 订阅</string>
     <string name="cancel_sub_success">取消订阅成功</string>
     <string name="cancel_sub_failed">取消订阅失败</string>
+    <string name="no_sub_content_tips_text">没有订阅内容，赶紧去订阅吧！</string>
+    <string name="search_no_content_tips_text">没有相关内容，请别强行搜索！</string>
 </resources>
