@@ -18,6 +18,7 @@ public class SubscriptionDao implements ISubDao {
     private static final String TAG = "SubscriptionDao";
     private static final SubscriptionDao ourInstance = new SubscriptionDao();
     private final XimalayaDBHelper mXimalayaDBHelper;
+    private ISubDaoCallback mCallback = null;
 
     public static SubscriptionDao getInstance() {
         return ourInstance;
@@ -25,6 +26,11 @@ public class SubscriptionDao implements ISubDao {
 
     private SubscriptionDao() {
         mXimalayaDBHelper = new XimalayaDBHelper(BaseApplication.getAppContext());
+    }
+
+    @Override
+    public void setCallback(ISubDaoCallback callback) {
+        mCallback = callback;
     }
 
     @Override
@@ -44,8 +50,14 @@ public class SubscriptionDao implements ISubDao {
             //插入数据
             db.insert(Constants.SUB_TB_NAME, null, contentValues);
             db.setTransactionSuccessful();
+            if (mCallback != null) {
+                mCallback.onAddResult(true);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            if (mCallback != null) {
+                mCallback.onAddResult(false);
+            }
         } finally {
             if (db != null) {
                 db.endTransaction();
@@ -63,8 +75,14 @@ public class SubscriptionDao implements ISubDao {
             int delete = db.delete(Constants.SUB_TB_NAME, Constants.SUB_ALBUM_ID + "=?", new String[]{String.valueOf(album.getId())});
             LogUtil.d(TAG, "delAlbum  delete --- > " + delete);
             db.setTransactionSuccessful();
+            if (mCallback != null) {
+                mCallback.onDelResult(true);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            if (mCallback != null) {
+                mCallback.onDelResult(false);
+            }
         } finally {
             if (db != null) {
                 db.endTransaction();
@@ -112,6 +130,9 @@ public class SubscriptionDao implements ISubDao {
             //把数据通知出去
             query.close();
             db.setTransactionSuccessful();
+            if (mCallback != null) {
+                mCallback.onSubListLoaded(result);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
