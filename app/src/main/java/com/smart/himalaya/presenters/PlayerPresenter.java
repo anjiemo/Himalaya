@@ -266,6 +266,11 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void registerViewCallback(IPlayerCallback iPlayerCallback) {
+        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
+            mIPlayerCallbacks.add(iPlayerCallback);
+        }
+        //更新之前，先让UI的pager有数据.
+        getPlayList();
         //通知当前的节目
         iPlayerCallback.onTrackUpdate(mCurrentTrack, mCurrentIndex);
         iPlayerCallback.onProgressChange(mCurrentProgressPosition, mProgressDuration);
@@ -275,9 +280,6 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         int modeIndex = mPlayModeSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
         mCurrentPlayMode = getModeByInt(modeIndex);
         iPlayerCallback.onPlayModeChange(mCurrentPlayMode);
-        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
-            mIPlayerCallbacks.add(iPlayerCallback);
-        }
     }
 
     private void handlePlayState(IPlayerCallback iPlayerCallback) {

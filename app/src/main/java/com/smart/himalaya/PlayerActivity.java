@@ -85,8 +85,6 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         initView();
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
-        //在界面初始化以后，才去获取数据
-        mPlayerPresenter.getPlayList();
         initEvent();
         initBgAnimation();
     }
@@ -370,7 +368,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     @Override
     public void onTrackUpdate(Track track, int playIndex) {
         if (track == null) {
-            LogUtil.d(TAG,"onTrackUpdate --- > track null.");
+            LogUtil.d(TAG, "onTrackUpdate --- > track null.");
             return;
         }
         mTrackTitleText = track.getTrackTitle();
