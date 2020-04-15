@@ -17,4 +17,6 @@
 
     <string name="click_play_tips_text">点击播放</string>
     <string name="listener_as_you_like_text">随便听听</string>
+    <string name="cancel_sub_tips_text">取消订阅</string>
+    <string name="sub_tips_text">+ 订阅</string>
 </resources>

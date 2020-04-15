@@ -21,6 +21,7 @@
         android:background="@color/white">
 
         <TextView
+            android:id="@+id/detail_sub_btn"
             android:layout_width="75dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
@@ -28,7 +29,7 @@
             android:layout_marginRight="14dp"
             android:background="@drawable/shape_subscription_bg"
             android:gravity="center"
-            android:text="+ 订阅"
+            android:text="@string/sub_tips_text"
             android:textColor="@color/white" />
 
     </RelativeLayout>

@@ -1,40 +1,39 @@
 package com.smart.himalaya.presenters;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.smart.himalaya.base.BaseApplication;
-import com.smart.himalaya.data.ISubDaoCallback;
-import com.smart.himalaya.data.SubscriptionDao;
+import com.smart.himalaya.beans.MyAlbum;
+import com.smart.himalaya.db.DaoSession;
+import com.smart.himalaya.db.MyAlbumDao;
+import com.smart.himalaya.interfaces.ISubDaoCallback;
 import com.smart.himalaya.interfaces.ISubscriptionCallback;
 import com.smart.himalaya.interfaces.ISubscriptionPresenter;
+import com.smart.himalaya.utils.Constants;
+import com.smart.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCallback {
 
-    private final SubscriptionDao mSubscriptionDao;
-    private Map<Long, Album> mData = new HashMap<>();
+    private static final String TAG = "SubscriptionPresenter";
+    private final DaoSession mDaoSession = BaseApplication.getDaoSession();
     private List<ISubscriptionCallback> mCallbacks = new ArrayList<>();
+    private List<Album> mSubscriptions = new ArrayList<>();
 
     private SubscriptionPresenter() {
-        mSubscriptionDao = SubscriptionDao.getInstance();
-        mSubscriptionDao.setCallback(this);
-        mSubscriptionDao.listAlbum();
-        listSubscriptions();
+
     }
 
     private void listSubscriptions() {
-        Observable.create(emitter -> {
-            //只调用，不处理结果
-            if (mSubscriptionDao != null) {
-                mSubscriptionDao.listAlbum();
-            }
-        }).subscribeOn(Schedulers.io()).subscribe();
+        mSubscriptions.clear();
+        List<MyAlbum> myAlbums = mDaoSession.loadAll(MyAlbum.class);
+        String json = new Gson().toJson(myAlbums);
+        List<Album> subscriptions = new Gson().fromJson(json, new TypeToken<List<Album>>() {
+        }.getType());
+        mSubscriptions.addAll(subscriptions);
     }
 
     private static SubscriptionPresenter sSubscriptionPresenter = null;
@@ -52,31 +51,39 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
 
     @Override
     public void addSubscription(Album album) {
-        Observable.create(emitter -> {
-            if (mSubscriptionDao != null) {
-                mSubscriptionDao.addAlbum(album);
+        //判断当前的订阅数量，不能超过100
+        if (mSubscriptions.size() >= Constants.MAX_SUB_COUNT) {
+            //给出提示
+            for (ISubscriptionCallback callback : mCallbacks) {
+                callback.onSubFull();
             }
-        }).subscribeOn(Schedulers.io()).subscribe();
+            return;
+        }
+        MyAlbum myAlbum = new MyAlbum();
+        myAlbum.setId(album.getId());
+        myAlbum.setAlbumTitle(album.getAlbumTitle());
+        myAlbum.setAlbumIntro(album.getAlbumIntro());
+        myAlbum.setCoverUrlLarge(album.getCoverUrlLarge());
+        myAlbum.setPlayCount(album.getPlayCount());
+        myAlbum.setIncludeTrackCount(album.getIncludeTrackCount());
+        myAlbum.setNickName(album.getAnnouncer().getNickname());
+        mDaoSession.insertOrReplace(myAlbum);
     }
 
     @Override
     public void deleteSubscription(Album album) {
-        Observable.create(emitter -> {
-            if (mSubscriptionDao != null) {
-                mSubscriptionDao.delAlbum(album);
-            }
-        }).subscribeOn(Schedulers.io()).subscribe();
+        mDaoSession.queryBuilder(MyAlbum.class).where(MyAlbumDao.Properties.Id.eq(album.getId())).buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     @Override
     public void getSubscriptionList() {
-
+        listSubscriptions();
     }
 
     @Override
     public boolean isSub(Album album) {
-        Album result = mData.get(album.getId());
-        return result == null;
+        List<MyAlbum> myAlbums = mDaoSession.queryBuilder(MyAlbum.class).where(MyAlbumDao.Properties.Id.eq(album.getId())).list();
+        return myAlbums.size() != 0;
     }
 
     @Override
@@ -95,6 +102,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     public void onAddResult(boolean isSuccess) {
         //添加结果的回调
         BaseApplication.getHandler().post(() -> {
+            LogUtil.d(TAG, "update ui for add result.");
             for (ISubscriptionCallback callback : mCallbacks) {
                 callback.onAddResult(isSuccess);
             }
@@ -112,11 +120,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     }
 
     @Override
-    public void onSubListLoaded(final List<Album> result) {
-        //加载数据的回调
-        for (Album album : result) {
-            mData.put(album.getId(), album);
-        }
+    public void onSubListLoaded(List<Album> result) {
         //通知UI更新
         BaseApplication.getHandler().post(() -> {
             for (ISubscriptionCallback callback : mCallbacks) {

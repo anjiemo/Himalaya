@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 29
@@ -17,6 +18,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.smart.himalaya.db'
+//        targetGenDir 'src/test/java'
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -55,4 +63,6 @@ dependencies {
 
     //rxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.2"
+    //GreenDao3.2(数据库框架)
+    implementation 'org.greenrobot:greendao:3.2.2'
 }
