@@ -1,6 +1,7 @@
 package com.smart.himalaya;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import com.smart.himalaya.adapters.AlbumListAdapter;
 import com.smart.himalaya.adapters.SearchRecommendAdapter;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.ISearchCallback;
+import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SearchPresenter;
 import com.smart.himalaya.utils.Constants;
 import com.smart.himalaya.utils.LogUtil;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity implements ISearchCallback {
+public class SearchActivity extends BaseActivity implements ISearchCallback, AlbumListAdapter.OnRecommendItemClickListener {
 
     private static final String TAG = "SearchActivity";
     private ImageView mBackBtn;
@@ -97,7 +99,6 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
                 if (mSearchPresenter != null) {
                     mSearchPresenter.loadMore();
                 }
-
             }
         });
         mBackBtn.setOnClickListener(v -> finish());
@@ -144,6 +145,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 //            LogUtil.d(TAG, "mSearchRecommendAdapter  keyword --- > " + keyword);
             switch2Search(keyword);
         });
+        mAlbumListAdapter.setonRecommendItemClickListener(this);
     }
 
     private void switch2Search(String text) {
@@ -206,6 +208,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
         //刷新控件
         mRefreshLayout = resultView.findViewById(R.id.search_result_refresh);
+        mRefreshLayout.setEnableRefresh(false);
         //显示热词的
         mFlowTextLayout = resultView.findViewById(R.id.recommend_hot_word_view);
 
@@ -328,5 +331,12 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
         mSearchRecommendList.setVisibility(View.GONE);
         mRefreshLayout.setVisibility(View.GONE);
         mFlowTextLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getInstance().setTargetAlbum(album);
+        //item被点击了，跳转到详情界面
+        startActivity(new Intent(this, DetailActivity.class));
     }
 }
