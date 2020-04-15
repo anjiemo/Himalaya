@@ -1,6 +1,6 @@
 package com.smart.himalaya.presenters;
 
-import com.smart.himalaya.api.XimalayaApi;
+import com.smart.himalaya.data.XimalayaApi;
 import com.smart.himalaya.interfaces.ISearchCallback;
 import com.smart.himalaya.interfaces.ISearchPresenter;
 import com.smart.himalaya.utils.Constants;
