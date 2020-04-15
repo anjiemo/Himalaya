@@ -22,6 +22,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
 
     private static final String TAG = "AlbumListAdapter";
     private List<Album> mData = new ArrayList<>();
+    private onAlbumItemLongClickListener mOnAlbumItemLongClickListener = null;
 
     @NonNull
     @Override
@@ -32,15 +33,23 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         //这里是设置数据
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(v -> {
             if (mItemClickListener != null) {
                 int clickPosition = (Integer) v.getTag();
-                mItemClickListener.onItemClick(clickPosition, mData.get(position));
+                mItemClickListener.onItemClick(clickPosition, mData.get(clickPosition));
             }
             Log.d(TAG, "onClick: =========" + v.getTag());
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (mOnAlbumItemLongClickListener != null) {
+                int clickPosition = (Integer) v.getTag();
+                mOnAlbumItemLongClickListener.onItemLongClick(mData.get(clickPosition));
+            }
+            //true表示消费了该事件
+            return true;
         });
         holder.setData(mData.get(position));
     }
@@ -95,13 +104,24 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         }
     }
 
-    private OnRecommendItemClickListener mItemClickListener = null;
+    private onAlbumItemClickListener mItemClickListener = null;
 
-    public void setAlbumItemClickListener(OnRecommendItemClickListener listener) {
+    public void setAlbumItemClickListener(onAlbumItemClickListener listener) {
         mItemClickListener = listener;
     }
 
-    public interface OnRecommendItemClickListener {
+    public interface onAlbumItemClickListener {
         void onItemClick(int position, Album album);
+    }
+
+    public void setOnAlbumItemLongClickListener(onAlbumItemLongClickListener onAlbumItemLongClickListener) {
+        mOnAlbumItemLongClickListener = onAlbumItemLongClickListener;
+    }
+
+    /**
+     * item长按的接口
+     */
+    public interface onAlbumItemLongClickListener {
+        void onItemLongClick(Album album);
     }
 }

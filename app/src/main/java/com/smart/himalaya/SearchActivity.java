@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity implements ISearchCallback, AlbumListAdapter.OnRecommendItemClickListener {
+public class SearchActivity extends BaseActivity implements ISearchCallback, AlbumListAdapter.onAlbumItemClickListener {
 
     private static final String TAG = "SearchActivity";
     private ImageView mBackBtn;

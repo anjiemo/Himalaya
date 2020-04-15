@@ -3,7 +3,6 @@ package com.smart.himalaya.fragments;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,7 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.AlbumListAdapter;
-import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.base.BaseFragment;
-import com.smart.himalaya.db.DaoSession;
 import com.smart.himalaya.interfaces.ISubscriptionCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SubscriptionPresenter;
@@ -29,7 +26,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class SubscriptionFragment extends BaseFragment implements ISubscriptionCallback, AlbumListAdapter.OnRecommendItemClickListener {
+public class SubscriptionFragment extends BaseFragment implements ISubscriptionCallback, AlbumListAdapter.onAlbumItemClickListener, AlbumListAdapter.onAlbumItemLongClickListener {
 
     private static final String TAG = "SubscriptionFragment";
     private SubscriptionPresenter mSubscriptionPresenter;
@@ -56,6 +53,7 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
         });
         mAlbumListAdapter = new AlbumListAdapter();
         mAlbumListAdapter.setAlbumItemClickListener(this);
+        mAlbumListAdapter.setOnAlbumItemLongClickListener(this);
         mSubListView.setAdapter(mAlbumListAdapter);
         mSubscriptionPresenter = SubscriptionPresenter.getInstance();
         mSubscriptionPresenter.loadSubscriptionList();
@@ -109,5 +107,10 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
         AlbumDetailPresenter.getInstance().setTargetAlbum(album);
         //Item被点击了，跳转到详情界面
         startActivity(new Intent(getContext(), DetailActivity.class));
+    }
+
+    @Override
+    public void onItemLongClick(Album album) {
+        //订阅的item被长按了
     }
 }
