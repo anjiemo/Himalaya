@@ -52,4 +52,7 @@ dependencies {
 
     //TwinklingRefreshLayout（下拉刷新框架：https://github.com/lcodecorex/TwinklingRefreshLayout）
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+
+    //rxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.2"
 }
