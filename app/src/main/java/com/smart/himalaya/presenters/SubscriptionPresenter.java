@@ -1,5 +1,6 @@
 package com.smart.himalaya.presenters;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -30,9 +31,11 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
 
     }
 
+    @SuppressLint("NewApi")
     private void listSubscriptions() {
         mSubscriptions.clear();
         List<MyAlbum> myAlbums = mDaoSession.loadAll(MyAlbum.class);
+        myAlbums.sort((o1, o2) -> (int) (o2.getSubscriptionTime() - o1.getSubscriptionTime()));
         for (MyAlbum myAlbum : myAlbums) {
             Album album = new Album();
             album.setId(myAlbum.getId());
@@ -79,6 +82,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
         myAlbum.setPlayCount(album.getPlayCount());
         myAlbum.setIncludeTrackCount(album.getIncludeTrackCount());
         myAlbum.setNickName(album.getAnnouncer().getNickname());
+        myAlbum.setSubscriptionTime(System.currentTimeMillis());
         mDaoSession.insertOrReplace(myAlbum);
     }
 

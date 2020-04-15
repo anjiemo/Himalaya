@@ -17,10 +17,12 @@ public class MyAlbum {
     private long includeTrackCount;
     private long playCount;
     private String nickName;
-    @Generated(hash = 1853946491)
+    private long subscriptionTime;
+
+    @Generated(hash = 1284066564)
     public MyAlbum(long id, String coverUrlLarge, String albumTitle,
             String albumIntro, long includeTrackCount, long playCount,
-            String nickName) {
+            String nickName, long subscriptionTime) {
         this.id = id;
         this.coverUrlLarge = coverUrlLarge;
         this.albumTitle = albumTitle;
@@ -28,6 +30,7 @@ public class MyAlbum {
         this.includeTrackCount = includeTrackCount;
         this.playCount = playCount;
         this.nickName = nickName;
+        this.subscriptionTime = subscriptionTime;
     }
     @Generated(hash = 1091479401)
     public MyAlbum() {
@@ -73,5 +76,11 @@ public class MyAlbum {
     }
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+    public long getSubscriptionTime() {
+        return this.subscriptionTime;
+    }
+    public void setSubscriptionTime(long subscriptionTime) {
+        this.subscriptionTime = subscriptionTime;
     }
 }

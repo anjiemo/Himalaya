@@ -29,7 +29,6 @@ import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.interfaces.ISearchCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SearchPresenter;
-import com.smart.himalaya.utils.Constants;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.FlowTextLayout;
 import com.smart.himalaya.views.UILoader;
@@ -162,7 +161,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
             //推荐热词的点击
             switch2Search(keyword);
         });
-        mAlbumListAdapter.setonRecommendItemClickListener(this);
+        mAlbumListAdapter.setAlbumItemClickListener(this);
     }
 
     private void switch2Search(String text) {
