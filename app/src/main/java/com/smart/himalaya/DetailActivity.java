@@ -362,7 +362,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             if (!playing) {
                 mPlayControlTips.setText(R.string.click_play_tips_text);
             } else {
-                if (!mCurrentTrackTitle.isEmpty()) {
+                if (mCurrentTrackTitle != null && !mCurrentTrackTitle.isEmpty()) {
                     mPlayControlTips.setText(mCurrentTrackTitle);
                 }
             }

@@ -1,5 +1,10 @@
 package com.smart.himalaya.beans;
 
+import com.smart.himalaya.utils.AlbumUniversalCastConvert;
+import com.smart.himalaya.utils.TrackUniversalCastConvert;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
+
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
@@ -18,7 +23,6 @@ public class MyAlbum {
     private long playCount;
     private String nickName;
     private long subscriptionTime;
-
     @Generated(hash = 1284066564)
     public MyAlbum(long id, String coverUrlLarge, String albumTitle,
             String albumIntro, long includeTrackCount, long playCount,

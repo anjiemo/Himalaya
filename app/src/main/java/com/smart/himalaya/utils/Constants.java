@@ -15,5 +15,7 @@ public class Constants {
     public static final String DB_NAME = "ximalaya.db";
     //订阅最多个数
     public static final int MAX_SUB_COUNT = 100;
+    //最大的历史记录数
+    public static final int MAX_HISTORY_COUNT = 100;
 
 }

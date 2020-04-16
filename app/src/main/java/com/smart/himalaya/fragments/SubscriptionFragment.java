@@ -105,6 +105,12 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        onRefresh();
+    }
+
+    @Override
     protected void onRefresh() {
         List<Album> albums = mSubscriptionPresenter.getSubscriptions();
         if (albums.size() == 0) {

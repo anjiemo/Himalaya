@@ -2,8 +2,10 @@ package com.smart.himalaya.presenters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.smart.himalaya.data.XimalayaApi;
 import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.interfaces.IPlayerCallback;
@@ -35,6 +37,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     private static final String TAG = "PlayerPresenter";
 
+    private HistoryPresenter mHistoryPresenter = null;
     private List<IPlayerCallback> mIPlayerCallbacks = new ArrayList<>();
     private final XmPlayerManager mPlayerManager;
     private Track mCurrentTrack;
@@ -66,6 +69,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         mPlayerManager.addPlayerStatusListener(this);
         //需要记录当前的播放模式
         mPlayModeSp = BaseApplication.getAppContext().getSharedPreferences(PLAY_MODE_SP_NAME, Context.MODE_PRIVATE);
+        mHistoryPresenter = HistoryPresenter.getHistoryPresenter();
+        mHistoryPresenter.loadHistories();
     }
 
     private static PlayerPresenter sPlayerPresenter;
@@ -247,7 +252,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
             public void onSuccess(TrackList trackList) {
                 //2、把专辑内容设置给播放器
                 List<Track> tracks = trackList.getTracks();
-                if (trackList != null && tracks.size() > 0) {
+                if (tracks.size() > 0) {
                     mPlayerManager.setPlayList(tracks, DEFAULT_PLAY_INDEX);
                     isPlayListSet = true;
                     mCurrentTrack = tracks.get(DEFAULT_PLAY_INDEX);
@@ -342,6 +347,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
         for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
             iPlayerCallback.onPlayStart();
         }
+        mHistoryPresenter.addHistory(mCurrentTrack);
     }
 
     @Override
