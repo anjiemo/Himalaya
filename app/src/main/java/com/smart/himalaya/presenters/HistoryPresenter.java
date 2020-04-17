@@ -67,6 +67,7 @@ public class HistoryPresenter {
                 mHistories.remove(mHistories.size() - 1);
             }
             mHistories.add(0, track);
+            mDaoSession.deleteAll(MyTrack.class);
             for (Track history : mHistories) {
                 MyTrack myTrack = new MyTrack();
                 myTrack.setDataId(history.getDataId());
