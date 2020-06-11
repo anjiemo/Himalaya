@@ -296,6 +296,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         if (mAlbumAuthor != null) {
             mAlbumAuthor.setText(album.getAnnouncer().getNickname());
         }
+
         //做毛玻璃效果
         if (mLargeCover != null) {
             Glide.with(this)
