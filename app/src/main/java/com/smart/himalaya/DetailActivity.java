@@ -3,6 +3,7 @@ package com.smart.himalaya;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,11 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
@@ -293,15 +299,20 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
         //做毛玻璃效果
         if (mLargeCover != null) {
-            final Handler handler = new Handler();
-            final ImageView imageView = Glide.with(this).load(album.getCoverUrlLarge()).into(mLargeCover).getView();
-            //到这里才是说明有图片的
-            // TODO: 2020/1/8 防止图片未加载成功，直接使用高斯模糊工具类时程序会崩溃
-            handler.postDelayed(() -> {
-                if (imageView.getDrawable() != null) {
-                    ImageBlur.makeBlur(imageView, DetailActivity.this);
-                }
-            }, 300);
+            Glide.with(this)
+                    .load(album.getCoverUrlLarge())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            ImageBlur.makeBlur(DetailActivity.this, resource, mLargeCover);
+                            return true;
+                        }
+                    }).submit();
         }
         if (mSmallCover != null) {
             Glide.with(this).load(album.getCoverUrlLarge()).into(mSmallCover);

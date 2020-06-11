@@ -3,6 +3,7 @@ package com.smart.himalaya.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -10,13 +11,23 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.widget.ImageView;
 
 public class ImageBlur {
-    public static void makeBlur(ImageView imageview, Context context) {
+    public static void makeBlur(Context context, ImageView imageview) {
         BitmapDrawable drawable = (BitmapDrawable) imageview.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
         Bitmap blurred = blurRenderScript(bitmap, 10, context); //second parametre is radius max:25
         imageview.setImageBitmap(blurred); //radius decide blur amount
     }
 
+    public static void makeBlur(Context context, Drawable drawable, ImageView imageView) {
+        Bitmap bitmap = ImageTools.drawableToBitmap(drawable);
+        Bitmap blurred = blurRenderScript(bitmap, 10, context); //second parametre is radius max:25
+        imageView.setImageBitmap(blurred); //radius decide blur amount
+    }
+
+    public static void makeBlur(Context context, Bitmap bitmap, ImageView imageview) {
+        Bitmap blurred = blurRenderScript(bitmap, 10, context); //second parametre is radius max:25
+        imageview.setImageBitmap(blurred); //radius decide blur amount
+    }
 
     private static Bitmap blurRenderScript(Bitmap smallBitmap, int radius, Context context) {
         smallBitmap = RGB565toARGB888(smallBitmap);
@@ -31,7 +42,6 @@ public class ImageBlur {
         blurOutput.copyTo(bitmap);
         renderScript.destroy();
         return bitmap;
-
     }
 
     private static Bitmap RGB565toARGB888(Bitmap img) {
