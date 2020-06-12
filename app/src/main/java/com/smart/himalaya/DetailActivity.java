@@ -309,7 +309,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            ImageBlur.makeBlur(DetailActivity.this, resource, mLargeCover);
+                            BaseApplication.getHandler().post(() -> ImageBlur.makeBlur(DetailActivity.this, resource, mLargeCover));
                             return true;
                         }
                     }).submit();
