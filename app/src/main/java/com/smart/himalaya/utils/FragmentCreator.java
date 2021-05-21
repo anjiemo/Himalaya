@@ -16,7 +16,7 @@ public class FragmentCreator {
 
     public final static int PAGE_COUNT = 3;
 
-    private static Map<Integer, BaseFragment> sCache = new HashMap<>();
+    private static final Map<Integer, BaseFragment> sCache = new HashMap<>();
 
     public static BaseFragment getFragment(int index) {
         BaseFragment baseFragment = sCache.get(index);

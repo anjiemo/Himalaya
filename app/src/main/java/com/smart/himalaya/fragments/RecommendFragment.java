@@ -24,6 +24,7 @@ import com.ximalaya.ting.android.opensdk.model.album.Album;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, AlbumListAdapter.onAlbumItemClickListener {
     private static final String TAG = "RecommendFragment";
@@ -35,8 +36,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
     @Override
     protected View onSubViewLoaded(final LayoutInflater layoutInflater, ViewGroup container) {
-
-        mUiLoader = new UILoader(getContext()) {
+        mUiLoader = new UILoader(Objects.requireNonNull(getContext())) {
             @Override
             protected View getSuccessView(ViewGroup container) {
                 return createSuccessView(layoutInflater, container);
@@ -57,11 +57,6 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
         //返回view，给界面显示
         return mUiLoader;
-    }
-
-    @Override
-    protected void onRefresh() {
-
     }
 
     private View createSuccessView(LayoutInflater layoutInflater, ViewGroup container) {

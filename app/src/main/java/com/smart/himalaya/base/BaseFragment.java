@@ -11,25 +11,21 @@ import androidx.fragment.app.Fragment;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected boolean isShowing;
-    private View mRootView;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = onSubViewLoaded(inflater,container);
-        return mRootView;
+        return onSubViewLoaded(inflater, container);
     }
 
     protected abstract View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container);
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isShowing) {
-            onRefresh();
-        }
+    public void onResume() {
+        super.onResume();
+        onRefresh();
     }
 
-    protected abstract void onRefresh();
+    protected void onRefresh() {
+
+    }
 }

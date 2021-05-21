@@ -20,6 +20,7 @@ import com.smart.himalaya.adapters.MainContentAdapter;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.presenters.RecommendPresenter;
+import com.smart.himalaya.utils.FragmentCreator;
 import com.smart.himalaya.utils.LogUtil;
 import com.smart.himalaya.views.RoundRectImageView;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
@@ -117,6 +118,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
 
         //ViewPager
         mContentPager = findViewById(R.id.content_pager);
+        mContentPager.setOffscreenPageLimit(FragmentCreator.PAGE_COUNT);
 
         //创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();

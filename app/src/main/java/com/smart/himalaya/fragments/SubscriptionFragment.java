@@ -98,22 +98,9 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        isShowing = true;
-        onRefresh();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        onRefresh();
-    }
-
-    @Override
     protected void onRefresh() {
         List<Album> albums = mSubscriptionPresenter.getSubscriptions();
-        if (albums.size() == 0) {
+        if (albums.isEmpty()) {
             if (mUiLoader != null) {
                 mUiLoader.upDateStatus(UILoader.UIStatus.EMPTY);
             }
@@ -152,6 +139,7 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
     public void onDestroyView() {
         super.onDestroyView();
         mAlbumListAdapter.setAlbumItemClickListener(null);
+        mUiLoader = null;
     }
 
     @Override

@@ -43,13 +43,6 @@ public class HistoryFragment extends BaseFragment implements TrackListAdapter.It
     private Track mCurrentClickHistoryItem;
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        isShowing = true;
-        onRefresh();
-    }
-
-    @Override
     protected View onSubViewLoaded(LayoutInflater layoutInflater, ViewGroup container) {
         FrameLayout rootView = (FrameLayout) layoutInflater.inflate(R.layout.fragment_history, container, false);
         if (mUiLoader == null) {
@@ -132,7 +125,7 @@ public class HistoryFragment extends BaseFragment implements TrackListAdapter.It
 
     @Override
     public void onCancelClick() {
-        //不用做，
+        //不用做
     }
 
     @Override
