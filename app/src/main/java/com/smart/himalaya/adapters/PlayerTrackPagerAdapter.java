@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PlayerTrackPagerAdapter extends PagerAdapter {
 
-    private List<Track> mData = new ArrayList<>();
+    private final List<Track> mData = new ArrayList<>();
 
     @NonNull
     @Override

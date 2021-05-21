@@ -6,18 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".PlayerActivity">
 
+    <ImageView
+        android:id="@+id/play_page_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/play_page_default_bg" />
+
     <com.smart.himalaya.views.MyMarqueeView
         android:id="@+id/track_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginRight="20dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
+        android:paddingBottom="20dp"
         android:text="这是标题内容"
-        android:textSize="20sp" />
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <com.smart.himalaya.views.AlbumCoverView
+        android:id="@+id/album_cover_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/track_title"
+        android:layout_marginBottom="100dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/track_pager_view"
@@ -25,7 +43,8 @@
         android:layout_height="match_parent"
         android:layout_below="@id/track_title"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="100dp" />
+        android:layout_marginBottom="100dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +55,9 @@
         <!--进度条和时间-->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
             <TextView
                 android:id="@+id/current_position"
@@ -45,6 +66,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="00:00"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
 
             <SeekBar
@@ -53,16 +75,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp" />
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                android:maxHeight="1dp"
+                android:progressBackgroundTint="@color/white"
+                android:progressTint="@color/white"
+                android:thumbTint="@color/white" />
 
             <TextView
                 android:id="@+id/track_duration"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:gravity="center"
                 android:text="00:00"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
 
         </RelativeLayout>

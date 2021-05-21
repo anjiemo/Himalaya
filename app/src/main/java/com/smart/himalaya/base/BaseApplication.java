@@ -1,5 +1,6 @@
 package com.smart.himalaya.base;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +9,10 @@ import android.os.Handler;
 import com.smart.himalaya.db.DaoMaster;
 import com.smart.himalaya.db.DaoSession;
 import com.smart.himalaya.utils.Constants;
+import com.smart.himalaya.utils.CoverLoader;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.utils.Preferences;
+import com.smart.himalaya.utils.ScreenUtils;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
@@ -16,7 +20,8 @@ import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 public class BaseApplication extends Application {
 
     private static Handler sHandler = null;
-    public static Context sContext = null;
+    @SuppressLint("StaticFieldLeak")
+    private static Context sContext = null;
     private static DaoSession sDaoSession = null;
 
     @Override
@@ -41,6 +46,9 @@ public class BaseApplication extends Application {
         sHandler = new Handler();
         sContext = getApplicationContext();
         initGreenDao();
+        Preferences.init(this);
+        ScreenUtils.init(this);
+        CoverLoader.get().init(this);
     }
 
     private void initGreenDao() {

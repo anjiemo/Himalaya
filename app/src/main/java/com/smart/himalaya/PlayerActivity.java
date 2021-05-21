@@ -2,7 +2,10 @@ package com.smart.himalaya;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -11,35 +14,56 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.smart.himalaya.adapters.PlayerTrackPagerAdapter;
 import com.smart.himalaya.base.BaseActivity;
+import com.smart.himalaya.beans.Music;
 import com.smart.himalaya.interfaces.IPlayerCallback;
 import com.smart.himalaya.presenters.PlayerPresenter;
+import com.smart.himalaya.utils.CoverLoader;
+import com.smart.himalaya.utils.ImageTools;
+import com.smart.himalaya.utils.ImageUtils;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.utils.ScreenUtils;
+import com.smart.himalaya.views.AlbumCoverView;
 import com.smart.himalaya.views.MyMarqueeView;
 import com.smart.himalaya.views.MyPopWindow;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_LIST;
 import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_LIST_LOOP;
 import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_RANDOM;
 import static com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl.PlayMode.PLAY_MODEL_SINGLE_LOOP;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 @SuppressLint("SimpleDateFormat")
 public class PlayerActivity extends BaseActivity implements IPlayerCallback, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "PlayerActivity";
-    private SimpleDateFormat mMinFormat = new SimpleDateFormat("mm:ss");
-    private SimpleDateFormat mHourFormat = new SimpleDateFormat("HH:mm:ss");
+    private final SimpleDateFormat mMinFormat = new SimpleDateFormat("mm:ss");
+    private final SimpleDateFormat mHourFormat = new SimpleDateFormat("HH:mm:ss");
     private ImageView mControlBtn;
     private PlayerPresenter mPlayerPresenter;
     private TextView mTotalDuration;
@@ -51,6 +75,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     private ImageView mPlayNextBtn;
     private MyMarqueeView mTrackTitleTv;
     private String mTrackTitleText;
+    private ImageView mPlayingBgIv;
+    private AlbumCoverView mAlbumCoverView;
     private ViewPager mTrackPageView;
     private PlayerTrackPagerAdapter mTrackPagerAdapter;
     private boolean mIsUserSlidePager = false;
@@ -58,7 +84,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     private XmPlayListControl.PlayMode mCurrentMode = PLAY_MODEL_LIST;
     //
-    private static Map<XmPlayListControl.PlayMode, XmPlayListControl.PlayMode> sPlayModeRule = new HashMap<>();
+    private static final Map<XmPlayListControl.PlayMode, XmPlayListControl.PlayMode> sPlayModeRule = new HashMap<>();
 
     //处理播放模式的切换
     //1、默认的是：PLAY_MODEL_LIST
@@ -82,11 +108,17 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        fullWindow();
         initView();
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
+        initCoverLrc();
         initEvent();
         initBgAnimation();
+    }
+
+    private void initCoverLrc() {
+        mAlbumCoverView.initNeedle(mPlayerPresenter.isPlaying());
     }
 
     private void initBgAnimation() {
@@ -204,6 +236,16 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
                 }
             }
         });
+        mAlbumCoverView.setOnClickListener(v -> {
+            boolean isPlaying = mPlayerPresenter.isPlaying();
+            if (isPlaying) {
+                mPlayerPresenter.pause();
+                mAlbumCoverView.pause();
+            } else {
+                mPlayerPresenter.play();
+                mAlbumCoverView.start();
+            }
+        });
     }
 
     private void switchPlayMode() {
@@ -262,6 +304,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (!TextUtils.isEmpty(mTrackTitleText)) {
             mTrackTitleTv.setText(mTrackTitleText);
         }
+        mPlayingBgIv = findViewById(R.id.play_page_bg_iv);
+        mAlbumCoverView = findViewById(R.id.album_cover_view);
+
         mTrackPageView = findViewById(R.id.track_pager_view);
         //创建适配器
         mTrackPagerAdapter = new PlayerTrackPagerAdapter();
@@ -280,6 +325,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.drawable.selector_player_pause);
         }
+        if (mAlbumCoverView != null) {
+            mAlbumCoverView.start();
+        }
     }
 
     @Override
@@ -287,12 +335,18 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.drawable.selector_player_play);
         }
+        if (mAlbumCoverView != null) {
+            mAlbumCoverView.pause();
+        }
     }
 
     @Override
     public void onPlayStop() {
         if (mControlBtn != null) {
             mControlBtn.setImageResource(R.drawable.selector_player_pause);
+        }
+        if (mAlbumCoverView != null) {
+            mAlbumCoverView.pause();
         }
     }
 
@@ -385,6 +439,38 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mMyPopWindow != null) {
             mMyPopWindow.setCurrentPlayPosition(playIndex);
         }
+        String coverUrlLarge = track.getCoverUrlLarge();
+        Observable.just(coverUrlLarge)
+                .map(coverUrl -> Glide.with(this).asFile().load(coverUrl).submit().get())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<File>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        LogUtil.d(TAG, "=====> onSubscribe");
+                    }
+
+                    @Override
+                    public void onNext(@NonNull File file) {
+                        Music music = new Music();
+                        music.setType(Music.Type.ONLINE);
+                        music.setCoverPath(file.getPath());
+                        mAlbumCoverView.setCoverBitmap(CoverLoader.get().loadRound(music));
+                        mPlayingBgIv.setImageBitmap(CoverLoader.get().loadBlur(music));
+                        LogUtil.d(TAG, "=====> onNext");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        LogUtil.d(TAG, "=====> onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LogUtil.d(TAG, "=====> onComplete");
+                    }
+                });
     }
 
     @Override
