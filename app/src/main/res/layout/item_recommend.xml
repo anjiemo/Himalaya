@@ -9,14 +9,15 @@
         android:layout_width="68dp"
         android:layout_height="65dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:scaleType="fitXY" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/album_cover"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@id/album_cover"
         android:orientation="vertical">
 
         <TextView
@@ -25,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:ellipsize="end"
+            android:maxLines="1"
             android:text="拿破仑·希尔《成功学全书》"
             android:textSize="18sp" />
 
@@ -60,7 +62,7 @@
                     android:id="@+id/album_play_count"
                     android:layout_width="45dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
                     android:ellipsize="end"
                     android:text="234.5万"
                     android:textColor="#ff848484"
@@ -71,7 +73,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -84,7 +86,7 @@
                     android:id="@+id/album_content_size"
                     android:layout_width="45dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
                     android:ellipsize="end"
                     android:text="23集"
                     android:textColor="#ff848484"
