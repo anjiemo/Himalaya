@@ -2,27 +2,21 @@ package com.smart.himalaya.fragments;
 
 import android.content.Intent;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.PlayerActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.TrackListAdapter;
 import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.base.BaseFragment;
-import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.HistoryPresenter;
 import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.views.ConfirmCheckBoxDialog;
@@ -76,10 +70,17 @@ public class HistoryFragment extends BaseFragment implements TrackListAdapter.It
         historyList.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = UIUtil.dip2px(view.getContext(), 5);
-                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
-                outRect.left = UIUtil.dip2px(view.getContext(), 5);
-                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+                RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager == null) {
+                    return;
+                }
+                int itemPosition = parent.getChildAdapterPosition(view);
+                final int itemCount = layoutManager.getItemCount();
+                final int lastItemIndex = itemCount - 1;
+                outRect.top = UIUtil.dip2px(view.getContext(), 6);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), itemPosition != lastItemIndex ? 0 : 6);
+                outRect.left = UIUtil.dip2px(view.getContext(), 6);
+                outRect.right = UIUtil.dip2px(view.getContext(), 6);
             }
         });
         historyList.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -108,7 +109,7 @@ public class HistoryFragment extends BaseFragment implements TrackListAdapter.It
     public void onItemClick(List<Track> detailData, int position) {
         //设置播放器的数据
         PlayerPresenter playerPresenter = PlayerPresenter.getPlayerPresenter();
-        playerPresenter.setPlayList(detailData,position);
+        playerPresenter.setPlayList(detailData, position);
         //跳转到播放器界面
         startActivity(new Intent(getActivity(), PlayerActivity.class));
     }
@@ -131,8 +132,8 @@ public class HistoryFragment extends BaseFragment implements TrackListAdapter.It
     @Override
     public void onConfirmClick(boolean isCheck) {
         //去删除历史
-        if(mHistoryPresenter != null && mCurrentClickHistoryItem != null) {
-            if(!isCheck) {
+        if (mHistoryPresenter != null && mCurrentClickHistoryItem != null) {
+            if (!isCheck) {
                 mHistoryPresenter.delHistory(mCurrentClickHistoryItem);
             } else {
                 mHistoryPresenter.clearHistory();

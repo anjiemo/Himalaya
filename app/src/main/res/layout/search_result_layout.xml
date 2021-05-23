@@ -7,7 +7,8 @@
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/search_result_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#ffF4F4F4">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/result_list_view"
@@ -21,6 +22,7 @@
         android:id="@+id/search_recommend_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ffF4F4F4"
         android:overScrollMode="never"
         android:visibility="gone" />
 

@@ -2,7 +2,6 @@ package com.smart.himalaya.fragments;
 
 import android.content.Intent;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -78,10 +76,17 @@ public class SubscriptionFragment extends BaseFragment implements ISubscriptionC
         mSubListView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = UIUtil.dip2px(view.getContext(), 5);
-                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
-                outRect.left = UIUtil.dip2px(view.getContext(), 5);
-                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+                RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager == null) {
+                    return;
+                }
+                int itemPosition = parent.getChildAdapterPosition(view);
+                final int itemCount = layoutManager.getItemCount();
+                final int lastItemIndex = itemCount - 1;
+                outRect.top = UIUtil.dip2px(view.getContext(), 6);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), itemPosition != lastItemIndex ? 0 : 6);
+                outRect.left = UIUtil.dip2px(view.getContext(), 6);
+                outRect.right = UIUtil.dip2px(view.getContext(), 6);
             }
         });
         mAlbumListAdapter = new AlbumListAdapter();

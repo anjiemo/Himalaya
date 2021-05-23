@@ -252,10 +252,17 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
         mResultListView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = UIUtil.dip2px(view.getContext(), 5);
-                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
-                outRect.left = UIUtil.dip2px(view.getContext(), 5);
-                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+                RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager == null) {
+                    return;
+                }
+                int itemPosition = parent.getChildAdapterPosition(view);
+                final int itemCount = layoutManager.getItemCount();
+                final int lastItemIndex = itemCount - 1;
+                outRect.top = UIUtil.dip2px(view.getContext(), 6);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), itemPosition != lastItemIndex ? 0 : 6);
+                outRect.left = UIUtil.dip2px(view.getContext(), 6);
+                outRect.right = UIUtil.dip2px(view.getContext(), 6);
             }
         });
 

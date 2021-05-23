@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -217,9 +216,15 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         //设置item的上下间距
         mAlbum_detail_list.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager == null) {
+                    return;
+                }
+                int itemPosition = parent.getChildAdapterPosition(view);
+                final int itemCount = layoutManager.getItemCount();
+                final int lastItemIndex = itemCount - 1;
                 outRect.top = UIUtil.dip2px(view.getContext(), 2);
-                outRect.bottom = UIUtil.dip2px(view.getContext(), 2);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), itemPosition != lastItemIndex ? 0 : 2);
                 outRect.left = UIUtil.dip2px(view.getContext(), 2);
                 outRect.right = UIUtil.dip2px(view.getContext(), 2);
             }
