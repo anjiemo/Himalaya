@@ -1,9 +1,9 @@
 package com.smart.himalaya;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +22,8 @@ import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.presenters.RecommendPresenter;
 import com.smart.himalaya.utils.FragmentCreator;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.utils.ScreenUtils;
+import com.smart.himalaya.utils.ViewKt;
 import com.smart.himalaya.views.RoundRectImageView;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
@@ -135,6 +137,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mSubTitle = findViewById(R.id.main_sub_title);
         mPlayControl = findViewById(R.id.main_play_control);
         mPlayControlItem = findViewById(R.id.main_play_control_item);
+        ViewKt.setRoundRectBg(mPlayControlItem, Color.parseColor("#CCCCCC"), ScreenUtils.dp2px(18));
         //搜索
         mSearchBtn = findViewById(R.id.search_btn);
     }
