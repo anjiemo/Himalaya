@@ -1,4 +1,4 @@
-package com.smart.himalaya.fragments;
+package com.smart.himalaya.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Rect;
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.smart.himalaya.DetailActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.AlbumListAdapter;
 import com.smart.himalaya.base.BaseApplication;
@@ -22,6 +21,7 @@ import com.smart.himalaya.base.BaseFragment;
 import com.smart.himalaya.interfaces.ISubscriptionCallback;
 import com.smart.himalaya.presenters.AlbumDetailPresenter;
 import com.smart.himalaya.presenters.SubscriptionPresenter;
+import com.smart.himalaya.ui.activity.DetailActivity;
 import com.smart.himalaya.views.ConfirmDialog;
 import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;

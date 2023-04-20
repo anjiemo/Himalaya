@@ -1,4 +1,4 @@
-package com.smart.himalaya;
+package com.smart.himalaya.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.AlbumListAdapter;
 import com.smart.himalaya.adapters.SearchRecommendAdapter;
 import com.smart.himalaya.base.BaseActivity;

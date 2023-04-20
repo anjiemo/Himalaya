@@ -1,4 +1,4 @@
-package com.smart.himalaya;
+package com.smart.himalaya.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.IndicatorAdapter;
 import com.smart.himalaya.adapters.MainContentAdapter;
 import com.smart.himalaya.interfaces.IPlayerCallback;

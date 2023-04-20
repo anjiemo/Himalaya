@@ -1,4 +1,4 @@
-package com.smart.himalaya.fragments;
+package com.smart.himalaya.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Rect;
@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.smart.himalaya.PlayerActivity;
 import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.TrackListAdapter;
 import com.smart.himalaya.base.BaseApplication;
 import com.smart.himalaya.base.BaseFragment;
 import com.smart.himalaya.presenters.HistoryPresenter;
 import com.smart.himalaya.presenters.PlayerPresenter;
+import com.smart.himalaya.ui.activity.PlayerActivity;
 import com.smart.himalaya.views.ConfirmCheckBoxDialog;
 import com.smart.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.track.Track;

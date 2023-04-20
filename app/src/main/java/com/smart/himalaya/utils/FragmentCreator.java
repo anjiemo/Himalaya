@@ -1,9 +1,9 @@
 package com.smart.himalaya.utils;
 
 import com.smart.himalaya.base.BaseFragment;
-import com.smart.himalaya.fragments.HistoryFragment;
-import com.smart.himalaya.fragments.RecommendFragment;
-import com.smart.himalaya.fragments.SubscriptionFragment;
+import com.smart.himalaya.ui.fragment.HistoryFragment;
+import com.smart.himalaya.ui.fragment.RecommendFragment;
+import com.smart.himalaya.ui.fragment.SubscriptionFragment;
 
 import java.util.HashMap;
 import java.util.Map;

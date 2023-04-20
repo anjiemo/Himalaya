@@ -1,4 +1,4 @@
-package com.smart.himalaya;
+package com.smart.himalaya.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +30,7 @@ import com.bumptech.glide.request.target.Target;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
+import com.smart.himalaya.R;
 import com.smart.himalaya.adapters.DetailListAdapter;
 import com.smart.himalaya.base.BaseActivity;
 import com.smart.himalaya.base.BaseApplication;
