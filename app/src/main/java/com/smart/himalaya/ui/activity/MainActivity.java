@@ -1,6 +1,7 @@
 package com.smart.himalaya.ui.activity;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -150,11 +151,14 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     }
 
     private void postNotification() {
+        Intent intent = new Intent(this, MainActivity.class);
         int notificationId = 1;
         Notification notification = NotificationChannelUtils.newNotificationBuilder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logo))
                 .setSmallIcon(R.mipmap.logo)
                 .setContentTitle("喜马拉雅正在运行")
+                .setNumber(0)
+                .setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE))
                 .build();
         NotificationManagerCompat.from(this).notify(notificationId, notification);
     }
