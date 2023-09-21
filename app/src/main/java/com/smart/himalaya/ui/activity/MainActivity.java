@@ -1,6 +1,8 @@
 package com.smart.himalaya.ui.activity;
 
+import android.app.Notification;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -23,6 +26,7 @@ import com.smart.himalaya.presenters.PlayerPresenter;
 import com.smart.himalaya.presenters.RecommendPresenter;
 import com.smart.himalaya.utils.FragmentCreator;
 import com.smart.himalaya.utils.LogUtil;
+import com.smart.himalaya.utils.NotificationChannelUtils;
 import com.smart.himalaya.utils.ScreenUtils;
 import com.smart.himalaya.utils.ViewKt;
 import com.smart.himalaya.views.RoundRectImageView;
@@ -75,8 +79,8 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
             if (mPlayerPresenter != null) {
                 boolean hasPlayList = mPlayerPresenter.hasPlayList();
                 if (!hasPlayList) {
-                    //没有设置过播放列表，我们就播放默认的第一个推荐专辑
-                    //第一个推荐专辑，每天都会变的
+                    // 没有设置过播放列表，我们就播放默认的第一个推荐专辑
+                    // 第一个推荐专辑，每天都会变的
                     playFirstRecommend();
                 } else {
                     if (mPlayerPresenter.isPlaying()) {
@@ -92,7 +96,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
             if (!hasPlayList) {
                 playFirstRecommend();
             }
-            //跳转到播放器界面
+            // 跳转到播放器界面
             startActivity(new Intent(this, PlayerActivity.class));
         });
         mSearchBtn.setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
@@ -113,34 +117,46 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private void initView() {
         mMagicIndicator = findViewById(R.id.main_indicator);
         mMagicIndicator.setBackgroundColor(getResources().getColor(R.color.main_color));
-        //创建indicator的适配器
+        // 创建indicator的适配器
         mIndicatorAdapter = new IndicatorAdapter(this);
         CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdjustMode(true);//设置调整模式(自我调节，平分位置)
+        commonNavigator.setAdjustMode(true);// 设置调整模式(自我调节，平分位置)
         commonNavigator.setAdapter(mIndicatorAdapter);
 
-        //ViewPager
+        // ViewPager
         mContentPager = findViewById(R.id.content_pager);
         mContentPager.setOffscreenPageLimit(FragmentCreator.PAGE_COUNT);
 
-        //创建内容适配器
+        // 创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         MainContentAdapter mainContentAdapter = new MainContentAdapter(supportFragmentManager, FragmentPagerAdapter.POSITION_NONE);
 
         mContentPager.setAdapter(mainContentAdapter);
-        //把ViewPager和indicator绑定到一起
+        // 把ViewPager和indicator绑定到一起
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mContentPager);
 
-        //播放控制相关的
+        // 播放控制相关的
         mRoundRectImageView = findViewById(R.id.main_track_cover);
         mHeaderTitle = findViewById(R.id.main_head_title);
         mSubTitle = findViewById(R.id.main_sub_title);
         mPlayControl = findViewById(R.id.main_play_control);
         mPlayControlItem = findViewById(R.id.main_play_control_item);
         ViewKt.setRoundRectBg(mPlayControlItem, Color.parseColor("#CCCCCC"), ScreenUtils.dp2px(18));
-        //搜索
+        // 搜索
         mSearchBtn = findViewById(R.id.search_btn);
+
+        postNotification();
+    }
+
+    private void postNotification() {
+        int notificationId = 1;
+        Notification notification = NotificationChannelUtils.newNotificationBuilder(this)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logo))
+                .setSmallIcon(R.mipmap.logo)
+                .setContentTitle("喜马拉雅正在运行")
+                .build();
+        NotificationManagerCompat.from(this).notify(notificationId, notification);
     }
 
     @Override

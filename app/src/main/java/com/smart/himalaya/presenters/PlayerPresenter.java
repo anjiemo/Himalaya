@@ -38,7 +38,7 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     private static final String TAG = "PlayerPresenter";
 
     private HistoryPresenter mHistoryPresenter = null;
-    private List<IPlayerCallback> mIPlayerCallbacks = new ArrayList<>();
+    private final List<IPlayerCallback> mIPlayerCallbacks = new ArrayList<>();
     private final XmPlayerManager mPlayerManager;
     private Track mCurrentTrack;
     public static final int DEFAULT_PLAY_INDEX = 0;
